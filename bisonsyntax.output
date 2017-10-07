@@ -1,0 +1,1810 @@
+Terminals unused in grammar
+
+   COMMA
+   DOT
+   RELOP
+   LOGIC
+   OR
+   AND
+   NOT
+   LBRACKET
+   RBRACKET
+   DOUBLEQUOMARKS
+   STRUCT
+
+
+State 0 conflicts: 19 shift/reduce, 1 reduce/reduce
+State 10 conflicts: 19 shift/reduce, 1 reduce/reduce
+State 13 conflicts: 1 shift/reduce
+State 21 conflicts: 19 shift/reduce, 2 reduce/reduce
+State 24 conflicts: 19 shift/reduce
+State 36 conflicts: 19 shift/reduce
+State 46 conflicts: 19 shift/reduce
+State 63 conflicts: 1 shift/reduce
+State 64 conflicts: 19 shift/reduce
+State 79 conflicts: 19 shift/reduce
+State 96 conflicts: 19 shift/reduce
+
+
+Grammar
+
+    0 $accept: P $end
+
+    1 P: L P
+    2  | L
+    3  | /* empty */
+
+    4 L: S
+
+    5 S: expr SEMIC S
+    6  | CTRLexpr S
+    7  | LBRACE P RBRACE
+    8  | /* empty */
+
+    9 expr: ID ASSIGNMENT E
+   10     | C
+   11     | E
+
+   12 CTRLexpr: IF C S ELSE S
+   13         | IF C S
+   14         | WHILE C DO S
+   15         | FOR LPARENTHESE expr SEMIC expr SEMIC expr RPARENTHESE S
+   16         | DO S WHILE LPARENTHESE IC RPARENTHESE SEMIC
+   17         | SWITCH expr LBRACE SWITCH_CASE RBRACE
+   18         | BREAK SEMIC
+   19         | CONTINUE SEMIC
+
+   20 SWITCH_CASE: CASE expr COLON S SWITCH_CASE
+   21            | /* empty */
+
+   22 C: LPARENTHESE IC RPARENTHESE
+   23  | IC
+
+   24 IC: E EQ E
+   25   | E LT E
+   26   | E GT E
+   27   | E NE E
+   28   | E LE E
+   29   | E GE E
+   30   | TRUE
+   31   | FALSE
+
+   32 E: E PLUS E
+   33  | E MINUS E
+   34  | E MULTI E
+   35  | E RDIV E
+   36  | MINUS E
+   37  | LPARENTHESE E RPARENTHESE
+   38  | F
+
+   39 F: ID
+   40  | DEC
+   41  | HEX
+   42  | OCT
+   43  | DEFLOAT
+   44  | OCFLOAT
+   45  | HEFLOAT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+ID (258) 9 39
+DEC (259) 40
+HEX (260) 41
+OCT (261) 42
+DEFLOAT (262) 43
+HEFLOAT (263) 45
+OCFLOAT (264) 44
+PLUS (265) 32
+MINUS (266) 33 36
+MULTI (267) 34
+RDIV (268) 35
+COMMA (269)
+DOT (270)
+RELOP (271)
+EQ (272) 24
+LT (273) 25
+GT (274) 26
+LE (275) 28
+GE (276) 29
+NE (277) 27
+COLON (278) 20
+LOGIC (279)
+OR (280)
+AND (281)
+NOT (282)
+LPARENTHESE (283) 15 16 22 37
+RPARENTHESE (284) 15 16 22 37
+LBRACKET (285)
+RBRACKET (286)
+LBRACE (287) 7 17
+RBRACE (288) 7 17
+DOUBLEQUOMARKS (289)
+IF (290) 12 13
+ELSE (291) 12
+WHILE (292) 14 16
+DO (293) 14 16
+FOR (294) 15
+SWITCH (295) 17
+CASE (296) 20
+CONTINUE (297) 19
+BREAK (298) 18
+STRUCT (299)
+SEMIC (300) 5 15 16 18 19
+ASSIGNMENT (301) 9
+TRUE (302) 30
+FALSE (303) 31
+UMINUS (304)
+
+
+Nonterminals, with rules where they appear
+
+$accept (50)
+    on left: 0
+P (51)
+    on left: 1 2 3, on right: 0 1 7
+L (52)
+    on left: 4, on right: 1 2
+S (53)
+    on left: 5 6 7 8, on right: 4 5 6 12 13 14 15 16 20
+expr (54)
+    on left: 9 10 11, on right: 5 15 17 20
+CTRLexpr (55)
+    on left: 12 13 14 15 16 17 18 19, on right: 6
+SWITCH_CASE (56)
+    on left: 20 21, on right: 17 20
+C (57)
+    on left: 22 23, on right: 10 12 13 14
+IC (58)
+    on left: 24 25 26 27 28 29 30 31, on right: 16 22 23
+E (59)
+    on left: 32 33 34 35 36 37 38, on right: 9 11 24 25 26 27 28 29
+    32 33 34 35 36 37
+F (60)
+    on left: 39 40 41 42 43 44 45, on right: 38
+
+
+State 0
+
+    0 $accept: . P $end
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    $end         reduce using rule 3 (P)
+    $end         [reduce using rule 8 (S)]
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 3 (P)
+
+    P         go to state 20
+    L         go to state 21
+    S         go to state 22
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 1
+
+    9 expr: ID . ASSIGNMENT E
+   39 F: ID .
+
+    ASSIGNMENT  shift, and go to state 29
+
+    $default  reduce using rule 39 (F)
+
+
+State 2
+
+   40 F: DEC .
+
+    $default  reduce using rule 40 (F)
+
+
+State 3
+
+   41 F: HEX .
+
+    $default  reduce using rule 41 (F)
+
+
+State 4
+
+   42 F: OCT .
+
+    $default  reduce using rule 42 (F)
+
+
+State 5
+
+   43 F: DEFLOAT .
+
+    $default  reduce using rule 43 (F)
+
+
+State 6
+
+   45 F: HEFLOAT .
+
+    $default  reduce using rule 45 (F)
+
+
+State 7
+
+   44 F: OCFLOAT .
+
+    $default  reduce using rule 44 (F)
+
+
+State 8
+
+   36 E: MINUS . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 32
+    F  go to state 28
+
+
+State 9
+
+   22 C: LPARENTHESE . IC RPARENTHESE
+   37 E: LPARENTHESE . E RPARENTHESE
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    IC  go to state 33
+    E   go to state 34
+    F   go to state 28
+
+
+State 10
+
+    7 S: LBRACE . P RBRACE
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    RBRACE       reduce using rule 3 (P)
+    RBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 3 (P)
+
+    P         go to state 35
+    L         go to state 21
+    S         go to state 22
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 11
+
+   12 CTRLexpr: IF . C S ELSE S
+   13         | IF . C S
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    C   go to state 36
+    IC  go to state 26
+    E   go to state 37
+    F   go to state 28
+
+
+State 12
+
+   14 CTRLexpr: WHILE . C DO S
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    C   go to state 38
+    IC  go to state 26
+    E   go to state 37
+    F   go to state 28
+
+
+State 13
+
+   16 CTRLexpr: DO . S WHILE LPARENTHESE IC RPARENTHESE SEMIC
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    WHILE  [reduce using rule 8 (S)]
+
+    S         go to state 39
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 14
+
+   15 CTRLexpr: FOR . LPARENTHESE expr SEMIC expr SEMIC expr RPARENTHESE S
+
+    LPARENTHESE  shift, and go to state 40
+
+
+State 15
+
+   17 CTRLexpr: SWITCH . expr LBRACE SWITCH_CASE RBRACE
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    expr  go to state 41
+    C     go to state 25
+    IC    go to state 26
+    E     go to state 27
+    F     go to state 28
+
+
+State 16
+
+   19 CTRLexpr: CONTINUE . SEMIC
+
+    SEMIC  shift, and go to state 42
+
+
+State 17
+
+   18 CTRLexpr: BREAK . SEMIC
+
+    SEMIC  shift, and go to state 43
+
+
+State 18
+
+   30 IC: TRUE .
+
+    $default  reduce using rule 30 (IC)
+
+
+State 19
+
+   31 IC: FALSE .
+
+    $default  reduce using rule 31 (IC)
+
+
+State 20
+
+    0 $accept: P . $end
+
+    $end  shift, and go to state 44
+
+
+State 21
+
+    1 P: L . P
+    2  | L .
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    $end         reduce using rule 2 (P)
+    $end         [reduce using rule 3 (P)]
+    $end         [reduce using rule 8 (S)]
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    RBRACE       reduce using rule 2 (P)
+    RBRACE       [reduce using rule 3 (P)]
+    RBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 2 (P)
+
+    P         go to state 45
+    L         go to state 21
+    S         go to state 22
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 22
+
+    4 L: S .
+
+    $default  reduce using rule 4 (L)
+
+
+State 23
+
+    5 S: expr . SEMIC S
+
+    SEMIC  shift, and go to state 46
+
+
+State 24
+
+    6 S: CTRLexpr . S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 8 (S)
+
+    S         go to state 47
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 25
+
+   10 expr: C .
+
+    $default  reduce using rule 10 (expr)
+
+
+State 26
+
+   23 C: IC .
+
+    $default  reduce using rule 23 (C)
+
+
+State 27
+
+   11 expr: E .
+   24 IC: E . EQ E
+   25   | E . LT E
+   26   | E . GT E
+   27   | E . NE E
+   28   | E . LE E
+   29   | E . GE E
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+    EQ     shift, and go to state 52
+    LT     shift, and go to state 53
+    GT     shift, and go to state 54
+    LE     shift, and go to state 55
+    GE     shift, and go to state 56
+    NE     shift, and go to state 57
+
+    $default  reduce using rule 11 (expr)
+
+
+State 28
+
+   38 E: F .
+
+    $default  reduce using rule 38 (E)
+
+
+State 29
+
+    9 expr: ID ASSIGNMENT . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 58
+    F  go to state 28
+
+
+State 30
+
+   39 F: ID .
+
+    $default  reduce using rule 39 (F)
+
+
+State 31
+
+   37 E: LPARENTHESE . E RPARENTHESE
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 59
+    F  go to state 28
+
+
+State 32
+
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+   36  | MINUS E .
+
+    $default  reduce using rule 36 (E)
+
+
+State 33
+
+   22 C: LPARENTHESE IC . RPARENTHESE
+
+    RPARENTHESE  shift, and go to state 60
+
+
+State 34
+
+   24 IC: E . EQ E
+   25   | E . LT E
+   26   | E . GT E
+   27   | E . NE E
+   28   | E . LE E
+   29   | E . GE E
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+   37  | LPARENTHESE E . RPARENTHESE
+
+    PLUS         shift, and go to state 48
+    MINUS        shift, and go to state 49
+    MULTI        shift, and go to state 50
+    RDIV         shift, and go to state 51
+    EQ           shift, and go to state 52
+    LT           shift, and go to state 53
+    GT           shift, and go to state 54
+    LE           shift, and go to state 55
+    GE           shift, and go to state 56
+    NE           shift, and go to state 57
+    RPARENTHESE  shift, and go to state 61
+
+
+State 35
+
+    7 S: LBRACE P . RBRACE
+
+    RBRACE  shift, and go to state 62
+
+
+State 36
+
+   12 CTRLexpr: IF C . S ELSE S
+   13         | IF C . S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 8 (S)
+
+    S         go to state 63
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 37
+
+   24 IC: E . EQ E
+   25   | E . LT E
+   26   | E . GT E
+   27   | E . NE E
+   28   | E . LE E
+   29   | E . GE E
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+    EQ     shift, and go to state 52
+    LT     shift, and go to state 53
+    GT     shift, and go to state 54
+    LE     shift, and go to state 55
+    GE     shift, and go to state 56
+    NE     shift, and go to state 57
+
+
+State 38
+
+   14 CTRLexpr: WHILE C . DO S
+
+    DO  shift, and go to state 64
+
+
+State 39
+
+   16 CTRLexpr: DO S . WHILE LPARENTHESE IC RPARENTHESE SEMIC
+
+    WHILE  shift, and go to state 65
+
+
+State 40
+
+   15 CTRLexpr: FOR LPARENTHESE . expr SEMIC expr SEMIC expr RPARENTHESE S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    expr  go to state 66
+    C     go to state 25
+    IC    go to state 26
+    E     go to state 27
+    F     go to state 28
+
+
+State 41
+
+   17 CTRLexpr: SWITCH expr . LBRACE SWITCH_CASE RBRACE
+
+    LBRACE  shift, and go to state 67
+
+
+State 42
+
+   19 CTRLexpr: CONTINUE SEMIC .
+
+    $default  reduce using rule 19 (CTRLexpr)
+
+
+State 43
+
+   18 CTRLexpr: BREAK SEMIC .
+
+    $default  reduce using rule 18 (CTRLexpr)
+
+
+State 44
+
+    0 $accept: P $end .
+
+    $default  accept
+
+
+State 45
+
+    1 P: L P .
+
+    $default  reduce using rule 1 (P)
+
+
+State 46
+
+    5 S: expr SEMIC . S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 8 (S)
+
+    S         go to state 68
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 47
+
+    6 S: CTRLexpr S .
+
+    $default  reduce using rule 6 (S)
+
+
+State 48
+
+   32 E: E PLUS . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 69
+    F  go to state 28
+
+
+State 49
+
+   33 E: E MINUS . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 70
+    F  go to state 28
+
+
+State 50
+
+   34 E: E MULTI . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 71
+    F  go to state 28
+
+
+State 51
+
+   35 E: E RDIV . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 72
+    F  go to state 28
+
+
+State 52
+
+   24 IC: E EQ . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 73
+    F  go to state 28
+
+
+State 53
+
+   25 IC: E LT . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 74
+    F  go to state 28
+
+
+State 54
+
+   26 IC: E GT . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 75
+    F  go to state 28
+
+
+State 55
+
+   28 IC: E LE . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 76
+    F  go to state 28
+
+
+State 56
+
+   29 IC: E GE . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 77
+    F  go to state 28
+
+
+State 57
+
+   27 IC: E NE . E
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+
+    E  go to state 78
+    F  go to state 28
+
+
+State 58
+
+    9 expr: ID ASSIGNMENT E .
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 9 (expr)
+
+
+State 59
+
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+   37  | LPARENTHESE E . RPARENTHESE
+
+    PLUS         shift, and go to state 48
+    MINUS        shift, and go to state 49
+    MULTI        shift, and go to state 50
+    RDIV         shift, and go to state 51
+    RPARENTHESE  shift, and go to state 61
+
+
+State 60
+
+   22 C: LPARENTHESE IC RPARENTHESE .
+
+    $default  reduce using rule 22 (C)
+
+
+State 61
+
+   37 E: LPARENTHESE E RPARENTHESE .
+
+    $default  reduce using rule 37 (E)
+
+
+State 62
+
+    7 S: LBRACE P RBRACE .
+
+    $default  reduce using rule 7 (S)
+
+
+State 63
+
+   12 CTRLexpr: IF C S . ELSE S
+   13         | IF C S .
+
+    ELSE  shift, and go to state 79
+
+    ELSE      [reduce using rule 13 (CTRLexpr)]
+    $default  reduce using rule 13 (CTRLexpr)
+
+
+State 64
+
+   14 CTRLexpr: WHILE C DO . S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 8 (S)
+
+    S         go to state 80
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 65
+
+   16 CTRLexpr: DO S WHILE . LPARENTHESE IC RPARENTHESE SEMIC
+
+    LPARENTHESE  shift, and go to state 81
+
+
+State 66
+
+   15 CTRLexpr: FOR LPARENTHESE expr . SEMIC expr SEMIC expr RPARENTHESE S
+
+    SEMIC  shift, and go to state 82
+
+
+State 67
+
+   17 CTRLexpr: SWITCH expr LBRACE . SWITCH_CASE RBRACE
+
+    CASE  shift, and go to state 83
+
+    $default  reduce using rule 21 (SWITCH_CASE)
+
+    SWITCH_CASE  go to state 84
+
+
+State 68
+
+    5 S: expr SEMIC S .
+
+    $default  reduce using rule 5 (S)
+
+
+State 69
+
+   32 E: E . PLUS E
+   32  | E PLUS E .
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 32 (E)
+
+
+State 70
+
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   33  | E MINUS E .
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 33 (E)
+
+
+State 71
+
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   34  | E MULTI E .
+   35  | E . RDIV E
+
+    $default  reduce using rule 34 (E)
+
+
+State 72
+
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+   35  | E RDIV E .
+
+    $default  reduce using rule 35 (E)
+
+
+State 73
+
+   24 IC: E EQ E .
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 24 (IC)
+
+
+State 74
+
+   25 IC: E LT E .
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 25 (IC)
+
+
+State 75
+
+   26 IC: E GT E .
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 26 (IC)
+
+
+State 76
+
+   28 IC: E LE E .
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 28 (IC)
+
+
+State 77
+
+   29 IC: E GE E .
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 29 (IC)
+
+
+State 78
+
+   27 IC: E NE E .
+   32 E: E . PLUS E
+   33  | E . MINUS E
+   34  | E . MULTI E
+   35  | E . RDIV E
+
+    PLUS   shift, and go to state 48
+    MINUS  shift, and go to state 49
+    MULTI  shift, and go to state 50
+    RDIV   shift, and go to state 51
+
+    $default  reduce using rule 27 (IC)
+
+
+State 79
+
+   12 CTRLexpr: IF C S ELSE . S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 8 (S)
+
+    S         go to state 85
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 80
+
+   14 CTRLexpr: WHILE C DO S .
+
+    $default  reduce using rule 14 (CTRLexpr)
+
+
+State 81
+
+   16 CTRLexpr: DO S WHILE LPARENTHESE . IC RPARENTHESE SEMIC
+
+    ID           shift, and go to state 30
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 31
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    IC  go to state 86
+    E   go to state 37
+    F   go to state 28
+
+
+State 82
+
+   15 CTRLexpr: FOR LPARENTHESE expr SEMIC . expr SEMIC expr RPARENTHESE S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    expr  go to state 87
+    C     go to state 25
+    IC    go to state 26
+    E     go to state 27
+    F     go to state 28
+
+
+State 83
+
+   20 SWITCH_CASE: CASE . expr COLON S SWITCH_CASE
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    expr  go to state 88
+    C     go to state 25
+    IC    go to state 26
+    E     go to state 27
+    F     go to state 28
+
+
+State 84
+
+   17 CTRLexpr: SWITCH expr LBRACE SWITCH_CASE . RBRACE
+
+    RBRACE  shift, and go to state 89
+
+
+State 85
+
+   12 CTRLexpr: IF C S ELSE S .
+
+    $default  reduce using rule 12 (CTRLexpr)
+
+
+State 86
+
+   16 CTRLexpr: DO S WHILE LPARENTHESE IC . RPARENTHESE SEMIC
+
+    RPARENTHESE  shift, and go to state 90
+
+
+State 87
+
+   15 CTRLexpr: FOR LPARENTHESE expr SEMIC expr . SEMIC expr RPARENTHESE S
+
+    SEMIC  shift, and go to state 91
+
+
+State 88
+
+   20 SWITCH_CASE: CASE expr . COLON S SWITCH_CASE
+
+    COLON  shift, and go to state 92
+
+
+State 89
+
+   17 CTRLexpr: SWITCH expr LBRACE SWITCH_CASE RBRACE .
+
+    $default  reduce using rule 17 (CTRLexpr)
+
+
+State 90
+
+   16 CTRLexpr: DO S WHILE LPARENTHESE IC RPARENTHESE . SEMIC
+
+    SEMIC  shift, and go to state 93
+
+
+State 91
+
+   15 CTRLexpr: FOR LPARENTHESE expr SEMIC expr SEMIC . expr RPARENTHESE S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    expr  go to state 94
+    C     go to state 25
+    IC    go to state 26
+    E     go to state 27
+    F     go to state 28
+
+
+State 92
+
+   20 SWITCH_CASE: CASE expr COLON . S SWITCH_CASE
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    $default  reduce using rule 8 (S)
+
+    S         go to state 95
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 93
+
+   16 CTRLexpr: DO S WHILE LPARENTHESE IC RPARENTHESE SEMIC .
+
+    $default  reduce using rule 16 (CTRLexpr)
+
+
+State 94
+
+   15 CTRLexpr: FOR LPARENTHESE expr SEMIC expr SEMIC expr . RPARENTHESE S
+
+    RPARENTHESE  shift, and go to state 96
+
+
+State 95
+
+   20 SWITCH_CASE: CASE expr COLON S . SWITCH_CASE
+
+    CASE  shift, and go to state 83
+
+    $default  reduce using rule 21 (SWITCH_CASE)
+
+    SWITCH_CASE  go to state 97
+
+
+State 96
+
+   15 CTRLexpr: FOR LPARENTHESE expr SEMIC expr SEMIC expr RPARENTHESE . S
+
+    ID           shift, and go to state 1
+    DEC          shift, and go to state 2
+    HEX          shift, and go to state 3
+    OCT          shift, and go to state 4
+    DEFLOAT      shift, and go to state 5
+    HEFLOAT      shift, and go to state 6
+    OCFLOAT      shift, and go to state 7
+    MINUS        shift, and go to state 8
+    LPARENTHESE  shift, and go to state 9
+    LBRACE       shift, and go to state 10
+    IF           shift, and go to state 11
+    WHILE        shift, and go to state 12
+    DO           shift, and go to state 13
+    FOR          shift, and go to state 14
+    SWITCH       shift, and go to state 15
+    CONTINUE     shift, and go to state 16
+    BREAK        shift, and go to state 17
+    TRUE         shift, and go to state 18
+    FALSE        shift, and go to state 19
+
+    ID           [reduce using rule 8 (S)]
+    DEC          [reduce using rule 8 (S)]
+    HEX          [reduce using rule 8 (S)]
+    OCT          [reduce using rule 8 (S)]
+    DEFLOAT      [reduce using rule 8 (S)]
+    HEFLOAT      [reduce using rule 8 (S)]
+    OCFLOAT      [reduce using rule 8 (S)]
+    MINUS        [reduce using rule 8 (S)]
+    LPARENTHESE  [reduce using rule 8 (S)]
+    LBRACE       [reduce using rule 8 (S)]
+    IF           [reduce using rule 8 (S)]
+    WHILE        [reduce using rule 8 (S)]
+    DO           [reduce using rule 8 (S)]
+    FOR          [reduce using rule 8 (S)]
+    SWITCH       [reduce using rule 8 (S)]
+    CONTINUE     [reduce using rule 8 (S)]
+    BREAK        [reduce using rule 8 (S)]
+    TRUE         [reduce using rule 8 (S)]
+    FALSE        [reduce using rule 8 (S)]
+    $default     reduce using rule 8 (S)
+
+    S         go to state 98
+    expr      go to state 23
+    CTRLexpr  go to state 24
+    C         go to state 25
+    IC        go to state 26
+    E         go to state 27
+    F         go to state 28
+
+
+State 97
+
+   20 SWITCH_CASE: CASE expr COLON S SWITCH_CASE .
+
+    $default  reduce using rule 20 (SWITCH_CASE)
+
+
+State 98
+
+   15 CTRLexpr: FOR LPARENTHESE expr SEMIC expr SEMIC expr RPARENTHESE S .
+
+    $default  reduce using rule 15 (CTRLexpr)
