@@ -189,32 +189,52 @@
 		|	E	RDIV	E	{printf("E->E/E\n");}
 		|	MINUS	E %prec UMINUS	{printf("E->-E\n");}
 		|	LPARENTHESE	E	RPARENTHESE	{printf("E->(E)\n");}
-		|	F	{printf("E->F\n");}
+		|	F	{
+					printf("E->F\n");
+					printf("	isint:%d	itype:%d\n	isfloat:%d	ftype:%f\n	ischar:%d	chartype:%c\n	isstring:%d\n	stringtype:%s\n",
+								$1->isint,$1->itype,	$1->isfloat,$1->ftype,
+								$1->ischar,$1->chartype,	$1->isstring,$1->stringtype);
+				}
 		;
 	
 	F	:	LVALUE	{printf("F->LVALUE\n");}
 		|	INTNUM	{
 				printf("F->INTNUM:%d\n",$1);
-				value* tempval=(value*)malloc(sizeof(value));
-				tempval->nextvalue=0;
+				value* tempval=_new_value();
 				tempval->isint=1;
-				tempval->ischar=0;
-				tempval->isfloat=0;
-				tempval->isstring=0;
 				tempval->itype=$1;
 				$$=tempval;
 				}
 		|	FLOATNUM	{
 				printf("F->FLOATNUM:%f\n",$1);
-				
+				value* tempval=_new_value();
+				tempval->isfloat=1;
+				tempval->ftype=$1;
+				$$=tempval;
 				}
 		|	CONSTCHAR	{
 				printf("F->CONSTCHAR\n");
-				
+				value* tempval=_new_value();
+				tempval->ischar=1;
+				tempval->chartype=$1[1];
+				$$=tempval;
 				}
 		|	CONSTSTRING	{
 				printf("F->CONSTSTRING\n");
-				
+				value* tempval=_new_value();
+				tempval->isstring=1;
+				int j=strlen($1);
+				char *tempstr=strdup($1);
+				if(j>2)
+				{
+					for(int i=1;i<j-1;i++)
+						tempstr[i-1]=tempstr[i];
+					tempstr[j-2]=0;
+				}else{
+					tempval->stringtype=0;
+				}
+				tempval->stringtype=tempstr;
+				$$=tempval;
 				}
 		;
 	INTNUM	:	DEC	{
