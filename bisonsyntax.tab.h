@@ -112,15 +112,17 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 12 "./bisonsyntax.y"
+#line 13 "./bisonsyntax.y"
 
 	char* stringtype;
+	char chartype;
 	int itype;
 	float ftype;
+	value* thisval;
 
 
 /* Line 2058 of yacc.c  */
-#line 124 "bisonsyntax.tab.h"
+#line 126 "bisonsyntax.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

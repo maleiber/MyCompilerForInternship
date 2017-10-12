@@ -8,11 +8,14 @@
 	extern char lex_buff[256];
 	extern int lex_buff_size;
 	extern int line_no;
+	
 %}
 %union{
 	char* stringtype;
+	char chartype;
 	int itype;
 	float ftype;
+	value* thisval;
 }
 %token <stringtype>ID 
 %token <stringtype>DEC 
@@ -21,13 +24,16 @@
 %token <stringtype>DEFLOAT 
 %token <stringtype>HEFLOAT 
 %token <stringtype>OCFLOAT 
+%type	<ftype>FLOATNUM
+%type	<itype>INTNUM
+%type	<thisval>F
 %token VOID
 %token INT
 %token FLOAT
 %token CHAR
 %token STRING
-%token CONSTCHAR
-%token CONSTSTRING
+%token <stringtype>CONSTCHAR
+%token <stringtype>CONSTSTRING
 %token DEF
 %token DEFINE
 %token RETURN
@@ -187,31 +193,47 @@
 		;
 	
 	F	:	LVALUE	{printf("F->LVALUE\n");}
-		|	INTNUM	{printf("F->INTNUM\n");}
-		|	FLOATNUM	{printf("F->FLOATNUM\n");}
-		|	CONSTCHAR	{printf("F->CONSTCHAR\n");}
-		|	CONSTSTRING	{printf("F->CONSTSTRING\n");}
+		|	INTNUM	{
+				printf("F->INTNUM:%d\n",$1);
+				value* tempval=(value*)malloc(sizeof(value));
+				tempval->nextvalue=0;
+				tempval->isint=1;
+				tempval->ischar=0;
+				tempval->isfloat=0;
+				tempval->isstring=0;
+				tempval->itype=$1;
+				$$=tempval;
+				}
+		|	FLOATNUM	{
+				printf("F->FLOATNUM:%f\n",$1);
+				
+				}
+		|	CONSTCHAR	{
+				printf("F->CONSTCHAR\n");
+				
+				}
+		|	CONSTSTRING	{
+				printf("F->CONSTSTRING\n");
+				
+				}
 		;
 	INTNUM	:	DEC	{
-					printf("INTNUM->DEC:%s",$1);
 					char* stoppos;
 					long decnum;
 					decnum=strtol($1,&stoppos,10);
-					printf("(%ld)\n", decnum);
+					$$=(int)decnum;
 					}
 		|	HEX	{
-					printf("INTNUM->HEX:%s",$1);
 					char* stoppos;
 					long decnum;
 					decnum=strtol(strlwr($1),&stoppos,16);
-					printf("(%ld)\n", decnum);
+					$$=(int)decnum;
 				}
 		|	OCT	{
-					printf("INTNUM->OCT:%s",$1);
 					char* stoppos;
 					long decnum;
 					decnum=strtol($1,&stoppos,8);
-					printf("(%ld)\n", decnum);
+					$$=(int)decnum;
 				}
 		|	LPARENTHESE	INT RPARENTHESE E	{
 					printf("INTNUM->(int)E\n");
@@ -221,22 +243,18 @@
 				}
 		;
 	FLOATNUM:	DEFLOAT	{
-					printf("FLOATNUM->DEFLOAT:%s",$1);
 					char* stoppos;
 					char buffer[64];
 					long decfloatnum;
 					long decintnum;
 					double decnum;
 					decintnum=strtol($1,&stoppos,10);
-					printf("(%ld)",decintnum);
 					decfloatnum=strtol(stoppos+sizeof(char),NULL,10);
-					printf("+(%ld)", decfloatnum);
 					sprintf(buffer,"%ld.%ld",decintnum,decfloatnum);
 					decnum=strtod(buffer,NULL);
-					printf("=%f\n",decnum);
+					$$=(float)decnum;
 					}
 		|	OCFLOAT	{
-					printf("FLOATNUM->OCFLOAT:%s",$1);
 					char* stoppos;
 					char buffer[64];
 					double decfloatnum=0.0;
@@ -244,7 +262,6 @@
 					double decnum;
 					double	jie=1.0/8;
 					decintnum=strtol($1,&stoppos,8);
-					printf("(%ld)",decintnum);
 					stoppos=stoppos+sizeof(char);
 					int j=strlen(stoppos);
 					for(int i=0;i<j;i++)
@@ -253,12 +270,10 @@
 						stoppos=stoppos+sizeof(char);
 						jie/=8;
 					}
-					printf("+(%f)", decfloatnum);
 					decnum=decintnum+decfloatnum;
-					printf("=%f\n",decnum);
+					$$=(float)decnum;
 					}
 		|	HEFLOAT	{
-					printf("FLOATNUM->HEFLOAT:%s",$1);
 					char* stoppos;
 					char buffer[64];
 					double decfloatnum=0.0;
@@ -267,7 +282,6 @@
 					double	jie=1.0/16;
 					$1=strlwr($1);
 					decintnum=strtol($1,&stoppos,16);
-					printf("(%ld)",decintnum);
 					stoppos=stoppos+sizeof(char);
 					int j=strlen(stoppos);
 					for(int i=0;i<j;i++)
@@ -277,10 +291,8 @@
 						stoppos=stoppos+sizeof(char);
 						jie/=16;
 					}
-					printf("+(%f)", decfloatnum);
 					decnum=decintnum+decfloatnum;
-					printf("=%f\n",decnum);
-					
+					$$=(float)decnum;
 					}
 		|	LPARENTHESE	FLOAT RPARENTHESE E	{
 					printf("FLOATNUM->(float)E\n");

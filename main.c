@@ -1,4 +1,15 @@
-
+typedef struct value value;
+	struct value{
+		char* stringtype;
+		char chartype;
+		int itype;
+		float ftype;
+		int isint;
+		int isfloat;
+		int ischar;
+		int isstring;
+		value *nextvalue;
+	};
 #include "syntax.h"
 #include "lex.yy.c"
 #include "bisonsyntax.tab.c"
