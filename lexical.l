@@ -70,21 +70,21 @@ return		{return	(RETURN);}
 "."		{return (DOT);}
 ":"		{return (COLON);}
 "="		{return (ASSIGNMENT);}
-"=="	{strcpy(lex_buff,"EQ");yylval=strdup(lex_buff);lex_buff_size=2;return (EQ);}
-"<"		{strcpy(lex_buff,"LT");yylval=strdup(lex_buff);lex_buff_size=2;return (LT);}
-">"		{strcpy(lex_buff,"GT");yylval=strdup(lex_buff);lex_buff_size=2;return (GT);}
-"<="	{strcpy(lex_buff,"LE");yylval=strdup(lex_buff);lex_buff_size=2;return (LE);}
-">="	{strcpy(lex_buff,"GE");yylval=strdup(lex_buff);lex_buff_size=2;return (GE);}
-"!="	{strcpy(lex_buff,"NE");yylval=strdup(lex_buff);lex_buff_size=2;return (NE);}
-"||"	{strcpy(lex_buff,"OR");yylval=strdup(lex_buff);lex_buff_size=2;return (OR);}
-"&&"	{strcpy(lex_buff,"AND");yylval=strdup(lex_buff);lex_buff_size=3;return (AND);}
-"!"		{strcpy(lex_buff,"NOT");yylval=strdup(lex_buff);lex_buff_size=3;return (NOT);}
-"("		{strcpy(lex_buff,"L");yylval=strdup(lex_buff);lex_buff_size=1;return (LPARENTHESE);}
-")"		{strcpy(lex_buff,"R");yylval=strdup(lex_buff);lex_buff_size=1;return (RPARENTHESE);}
-"["		{strcpy(lex_buff,"L");yylval=strdup(lex_buff);lex_buff_size=1;return (LBRACKET);}
-"]"		{strcpy(lex_buff,"R");yylval=strdup(lex_buff);lex_buff_size=1;return (RBRACKET);}
-"{"		{strcpy(lex_buff,"L");yylval=strdup(lex_buff);lex_buff_size=1;return (LBRACE);}
-"}"		{strcpy(lex_buff,"R");yylval=strdup(lex_buff);lex_buff_size=1;return (RBRACE);}
+"=="	{strcpy(lex_buff,"EQ");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (EQ);}
+"<"		{strcpy(lex_buff,"LT");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (LT);}
+">"		{strcpy(lex_buff,"GT");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (GT);}
+"<="	{strcpy(lex_buff,"LE");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (LE);}
+">="	{strcpy(lex_buff,"GE");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (GE);}
+"!="	{strcpy(lex_buff,"NE");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (NE);}
+"||"	{strcpy(lex_buff,"OR");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (OR);}
+"&&"	{strcpy(lex_buff,"AND");yylval.stringtype=strdup(lex_buff);lex_buff_size=3;return (AND);}
+"!"		{strcpy(lex_buff,"NOT");yylval.stringtype=strdup(lex_buff);lex_buff_size=3;return (NOT);}
+"("		{strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LPARENTHESE);}
+")"		{strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RPARENTHESE);}
+"["		{strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LBRACKET);}
+"]"		{strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RBRACKET);}
+"{"		{strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LBRACE);}
+"}"		{strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RBRACE);}
 "&"		{return	(ADDR);}
 \"		{return (DOUBLEQUOMARKS);}
 \n	{line_no++;}
@@ -95,35 +95,36 @@ void install_id()
 {
 	//printf("idn %s\n",yytext);
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=yyleng;
 }
 void install_decnum()
 {
 	//printf("dec %s\n",yytext);
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=yyleng;
 }
 void install_hexnum()
 {
 	//printf("hex %s\n",yytext);
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=yyleng;
 }
 void install_octnum()
 {
 	//printf("oct %s\n",yytext);
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=yyleng;
 }
 void install_decfloat()
 {
 	//printf("dec float %s\n",yytext);
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=yyleng;
 }
 
@@ -131,7 +132,7 @@ void install_hexfloat()
 {
 	//printf("hex float %s\n",yytext);
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=yyleng;
 }
 
@@ -139,21 +140,21 @@ void install_octfloat()
 {
 	//printf("oct float %s\n",yytext);
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=yyleng;
 }
 
 void install_constchar()
 {
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=1;
 }
 
 void install_conststring()
 {
 	sprintf(lex_buff,"%s",yytext);
-	yylval=strdup(lex_buff);
+	yylval.stringtype=strdup(lex_buff);
 	lex_buff_size=yyleng;
 }
 

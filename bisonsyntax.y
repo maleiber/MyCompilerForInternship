@@ -9,13 +9,18 @@
 	extern int lex_buff_size;
 	extern int line_no;
 %}
-%token ID 
-%token DEC 
-%token HEX 
-%token OCT 
-%token DEFLOAT 
-%token HEFLOAT 
-%token OCFLOAT 
+%union{
+	char* stringtype;
+	int itype;
+	float ftype;
+}
+%token <stringtype>ID 
+%token <stringtype>DEC 
+%token <stringtype>HEX 
+%token <stringtype>OCT 
+%token <stringtype>DEFLOAT 
+%token <stringtype>HEFLOAT 
+%token <stringtype>OCFLOAT 
 %token VOID
 %token INT
 %token FLOAT
@@ -74,6 +79,7 @@
 %left ELSE 
 %left COMMA
 %right UMINUS
+
 %%
 	P	:	L	P	{printf("P->LP\n");}
 		|	L		{printf("P->L\n");}

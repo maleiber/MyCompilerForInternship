@@ -1,4 +1,3 @@
-#define YYSTYPE char*
 
 #include "syntax.h"
 #include "lex.yy.c"
