@@ -70,7 +70,7 @@
 	#include <stddef.h>
 	#include <string.h>
 	#include "syntax.h"
-
+	#include "node.h"
 	extern char lex_buff[256];
 	extern int lex_buff_size;
 	extern int line_no;
@@ -553,8 +553,8 @@ static const yytype_uint16 yyrline[] =
      145,   147,   148,   149,   150,   152,   153,   154,   155,   158,
      161,   164,   165,   167,   170,   174,   175,   177,   178,   179,
      180,   181,   182,   183,   184,   186,   187,   188,   189,   190,
-     191,   192,   200,   201,   208,   215,   222,   240,   246,   252,
-     258,   261,   265,   277,   296,   317,   320
+     191,   192,   198,   199,   206,   213,   220,   238,   244,   250,
+     256,   259,   263,   275,   294,   315,   318
 };
 #endif
 
@@ -2066,24 +2066,22 @@ yyreduce:
 #line 192 "./bisonsyntax.y"
     {
 					printf("E->F\n");
-					printf("	isint:%d	itype:%d\n	isfloat:%d	ftype:%f\n	ischar:%d	chartype:%c\n	isstring:%d\n	stringtype:%s\n",
-								(yyvsp[(1) - (1)].thisval)->isint,(yyvsp[(1) - (1)].thisval)->itype,	(yyvsp[(1) - (1)].thisval)->isfloat,(yyvsp[(1) - (1)].thisval)->ftype,
-								(yyvsp[(1) - (1)].thisval)->ischar,(yyvsp[(1) - (1)].thisval)->chartype,	(yyvsp[(1) - (1)].thisval)->isstring,(yyvsp[(1) - (1)].thisval)->stringtype);
+					show_value(*(yyvsp[(1) - (1)].thisval));
 				}
     break;
 
   case 72:
 /* Line 1792 of yacc.c  */
-#line 200 "./bisonsyntax.y"
+#line 198 "./bisonsyntax.y"
     {printf("F->LVALUE\n");}
     break;
 
   case 73:
 /* Line 1792 of yacc.c  */
-#line 201 "./bisonsyntax.y"
+#line 199 "./bisonsyntax.y"
     {
 				printf("F->INTNUM:%d\n",(yyvsp[(1) - (1)].itype));
-				value* tempval=_init_value();
+				value* tempval=_new_value();
 				tempval->isint=1;
 				tempval->itype=(yyvsp[(1) - (1)].itype);
 				(yyval.thisval)=tempval;
@@ -2092,10 +2090,10 @@ yyreduce:
 
   case 74:
 /* Line 1792 of yacc.c  */
-#line 208 "./bisonsyntax.y"
+#line 206 "./bisonsyntax.y"
     {
 				printf("F->FLOATNUM:%f\n",(yyvsp[(1) - (1)].ftype));
-				value* tempval=_init_value();
+				value* tempval=_new_value();
 				tempval->isfloat=1;
 				tempval->ftype=(yyvsp[(1) - (1)].ftype);
 				(yyval.thisval)=tempval;
@@ -2104,10 +2102,10 @@ yyreduce:
 
   case 75:
 /* Line 1792 of yacc.c  */
-#line 215 "./bisonsyntax.y"
+#line 213 "./bisonsyntax.y"
     {
 				printf("F->CONSTCHAR\n");
-				value* tempval=_init_value();
+				value* tempval=_new_value();
 				tempval->ischar=1;
 				tempval->chartype=(yyvsp[(1) - (1)].stringtype)[1];
 				(yyval.thisval)=tempval;
@@ -2116,10 +2114,10 @@ yyreduce:
 
   case 76:
 /* Line 1792 of yacc.c  */
-#line 222 "./bisonsyntax.y"
+#line 220 "./bisonsyntax.y"
     {
 				printf("F->CONSTSTRING\n");
-				value* tempval=_init_value();
+				value* tempval=_new_value();
 				tempval->isstring=1;
 				int j=strlen((yyvsp[(1) - (1)].stringtype));
 				char *tempstr=strdup((yyvsp[(1) - (1)].stringtype));
@@ -2138,7 +2136,7 @@ yyreduce:
 
   case 77:
 /* Line 1792 of yacc.c  */
-#line 240 "./bisonsyntax.y"
+#line 238 "./bisonsyntax.y"
     {
 					char* stoppos;
 					long decnum;
@@ -2149,7 +2147,7 @@ yyreduce:
 
   case 78:
 /* Line 1792 of yacc.c  */
-#line 246 "./bisonsyntax.y"
+#line 244 "./bisonsyntax.y"
     {
 					char* stoppos;
 					long decnum;
@@ -2160,7 +2158,7 @@ yyreduce:
 
   case 79:
 /* Line 1792 of yacc.c  */
-#line 252 "./bisonsyntax.y"
+#line 250 "./bisonsyntax.y"
     {
 					char* stoppos;
 					long decnum;
@@ -2171,7 +2169,7 @@ yyreduce:
 
   case 80:
 /* Line 1792 of yacc.c  */
-#line 258 "./bisonsyntax.y"
+#line 256 "./bisonsyntax.y"
     {
 					printf("INTNUM->(int)E\n");
 				}
@@ -2179,7 +2177,7 @@ yyreduce:
 
   case 81:
 /* Line 1792 of yacc.c  */
-#line 261 "./bisonsyntax.y"
+#line 259 "./bisonsyntax.y"
     {
 					printf("INTNUM->int(E)\n");
 				}
@@ -2187,7 +2185,7 @@ yyreduce:
 
   case 82:
 /* Line 1792 of yacc.c  */
-#line 265 "./bisonsyntax.y"
+#line 263 "./bisonsyntax.y"
     {
 					char* stoppos;
 					char buffer[64];
@@ -2204,7 +2202,7 @@ yyreduce:
 
   case 83:
 /* Line 1792 of yacc.c  */
-#line 277 "./bisonsyntax.y"
+#line 275 "./bisonsyntax.y"
     {
 					char* stoppos;
 					char buffer[64];
@@ -2228,7 +2226,7 @@ yyreduce:
 
   case 84:
 /* Line 1792 of yacc.c  */
-#line 296 "./bisonsyntax.y"
+#line 294 "./bisonsyntax.y"
     {
 					char* stoppos;
 					char buffer[64];
@@ -2254,7 +2252,7 @@ yyreduce:
 
   case 85:
 /* Line 1792 of yacc.c  */
-#line 317 "./bisonsyntax.y"
+#line 315 "./bisonsyntax.y"
     {
 					printf("FLOATNUM->(float)E\n");
 					}
@@ -2262,7 +2260,7 @@ yyreduce:
 
   case 86:
 /* Line 1792 of yacc.c  */
-#line 320 "./bisonsyntax.y"
+#line 318 "./bisonsyntax.y"
     {
 					printf("FLOATNUM->float(E)\n");
 					}
@@ -2270,7 +2268,7 @@ yyreduce:
 
 
 /* Line 1792 of yacc.c  */
-#line 2274 "bisonsyntax.tab.c"
+#line 2272 "bisonsyntax.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2502,7 +2500,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 325 "./bisonsyntax.y"
+#line 323 "./bisonsyntax.y"
 
 void yyerror (char const *s) {
    fprintf (stderr, "%s\n", s);

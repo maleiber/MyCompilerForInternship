@@ -4,7 +4,7 @@
 	#include <stddef.h>
 	#include <string.h>
 	#include "syntax.h"
-
+	#include "node.h"
 	extern char lex_buff[256];
 	extern int lex_buff_size;
 	extern int line_no;
@@ -191,9 +191,7 @@
 		|	LPARENTHESE	E	RPARENTHESE	{printf("E->(E)\n");}
 		|	F	{
 					printf("E->F\n");
-					printf("	isint:%d	itype:%d\n	isfloat:%d	ftype:%f\n	ischar:%d	chartype:%c\n	isstring:%d\n	stringtype:%s\n",
-								$1->isint,$1->itype,	$1->isfloat,$1->ftype,
-								$1->ischar,$1->chartype,	$1->isstring,$1->stringtype);
+					show_value(*$1);
 				}
 		;
 	
