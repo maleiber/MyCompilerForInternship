@@ -17,6 +17,10 @@ void main(int argc,char* argv[])
 	
 	FILE *rhand;
 	int ret_val=0;
+	//preactions
+	yylloc.first_line = yylloc.last_line = 1;
+	yylloc.first_column = yylloc.last_column = 0;
+	_init_block_list();
 	printf("%d open %s\n", argc ,argv[1]);
 	if(argc>1){
 		rhand=fopen(argv[1],"r");

@@ -5,6 +5,7 @@
 	#include <string.h>
 	#include "syntax.h"
 	#include "node.h"
+	#include "mylib.h"
 	extern char lex_buff[256];
 	extern int lex_buff_size;
 	extern int line_no;
@@ -27,6 +28,8 @@
 %type	<ftype>FLOATNUM
 %type	<itype>INTNUM
 %type	<thisval>F
+%type	<thisval>LVALUE
+%type	<itype>ARRSIZE
 %token VOID
 %token INT
 %token FLOAT
@@ -126,14 +129,36 @@
 								}
 						|		{printf("DEFINITE_ARRAYSIZE->null\n");}
 						;
-	LVALUE	:	ID			{printf("LVALUE->ID:%s\n",$1);}	
-			|	ADDR	ID	{printf("LVALUE->&ID\n");}
-			|	ID	LBRACKET	ARRSIZE	RBRACKET	{printf("LVALUE->ID[ARRSIZE]\n");}
-			|	ID	LPARENTHESE	expr	RPARENTHESE	{printf("LVALUE->ID(expr)\n");}
-			|	ID	LPARENTHESE	expr	RPARENTHESE	LBRACE	P	RBRACE	{printf("LVALUE->ID(expr){P}\n");}
-			|	LVALUE	ASSIGNMENT	LVALUE			{printf("LVALUE->LVALUE=LVALUE\n");}		
-			|	LVALUE	ASSIGNMENT	E				{printf("LVALUE->LVALUE=E\n");}	
-			|	LVALUE	COMMA	LVALUE				{printf("LVALUE->LVALUE,LVALUE\n");}
+	LVALUE	:	ID			{
+					printf("LVALUE->ID:%s\n",$1);
+					value *tmp=_new_value();
+					tmp->isvariable=1;
+					$$=tmp;
+					}	
+			|	ADDR	ID	{
+					printf("LVALUE->&ID\n");
+					value *tmp=_new_value();
+					tmp->isaddr=1;
+					$$=tmp;
+					}
+			|	ID	LBRACKET	ARRSIZE	RBRACKET	{
+					printf("LVALUE->ID[ARRSIZE]\n");
+					}
+			|	ID	LPARENTHESE	expr	RPARENTHESE	{
+					printf("LVALUE->ID(expr)\n");
+					}
+			|	ID	LPARENTHESE	expr	RPARENTHESE	LBRACE	P	RBRACE	{
+					printf("LVALUE->ID(expr){P}\n");
+					}
+			|	LVALUE	ASSIGNMENT	LVALUE			{
+					printf("LVALUE->LVALUE=LVALUE\n");
+					}		
+			|	LVALUE	ASSIGNMENT	E				{
+					printf("LVALUE->LVALUE=E\n");
+					}	
+			|	LVALUE	COMMA	LVALUE				{
+					printf("LVALUE->LVALUE,LVALUE\n");
+					}
 			;
 	TYPE	:	VOID	{printf("TYPE->VOID\n");}
 			|	INT		{printf("TYPE->INT\n");}
@@ -141,8 +166,24 @@
 			|	CHAR	{printf("TYPE->CHAR\n");}
 			|	STRING	{printf("TYPE->STRING\n");}
 			;
-	ARRSIZE	:	ID		{printf("ARRSIZE->ID\n");}
-			|	INTNUM	{printf("ARRSIZE->INTNUM\n");}
+	ARRSIZE	:	ID		{
+						printf("ARRSIZE->ID\n");
+						int expect_type[1]={0};
+						value ret_val=_find_id_from_block(_get_block_pos(),$1,expect_type);
+						//printf("	idval:%ld\n",ret_val.idval);
+						if(ret_val.idval<0){
+						//error deal
+							fprintf (stderr,
+							   "expected '%s' but argument is of type '%s', l%d,c%d-l%d,c%d",
+							   typemap[0],typemap[ret_val.idval+20],
+							   @1.first_line, @1.first_column,
+							   @1.last_line, @1.last_column);
+							}
+						
+						}
+			|	INTNUM	{
+						printf("ARRSIZE->INTNUM\n");
+						}
 			;
 	RARRAY	:	LBRACE	E	RBRACE	COMMA	RARRAY			{printf("RARRAY->{E},RARRAY\n");}
 			|	LBRACE	RARRAY	RBRACE	COMMA	RARRAY		{printf("RARRAY->{RARRAY},RARRAY\n");}
@@ -236,22 +277,13 @@
 				}
 		;
 	INTNUM	:	DEC	{
-					char* stoppos;
-					long decnum;
-					decnum=strtol($1,&stoppos,10);
-					$$=(int)decnum;
+					$$=_my_atoi($1,10);
 					}
 		|	HEX	{
-					char* stoppos;
-					long decnum;
-					decnum=strtol(strlwr($1),&stoppos,16);
-					$$=(int)decnum;
+					$$=_my_atoi($1,16);
 				}
 		|	OCT	{
-					char* stoppos;
-					long decnum;
-					decnum=strtol($1,&stoppos,8);
-					$$=(int)decnum;
+					$$=_my_atoi($1,8);
 				}
 		|	LPARENTHESE	INT RPARENTHESE E	{
 					printf("INTNUM->(int)E\n");
@@ -261,56 +293,13 @@
 				}
 		;
 	FLOATNUM:	DEFLOAT	{
-					char* stoppos;
-					char buffer[64];
-					long decfloatnum;
-					long decintnum;
-					double decnum;
-					decintnum=strtol($1,&stoppos,10);
-					decfloatnum=strtol(stoppos+sizeof(char),NULL,10);
-					sprintf(buffer,"%ld.%ld",decintnum,decfloatnum);
-					decnum=strtod(buffer,NULL);
-					$$=(float)decnum;
+					$$=_my_atof($1,10);
 					}
 		|	OCFLOAT	{
-					char* stoppos;
-					char buffer[64];
-					double decfloatnum=0.0;
-					long decintnum;
-					double decnum;
-					double	jie=1.0/8;
-					decintnum=strtol($1,&stoppos,8);
-					stoppos=stoppos+sizeof(char);
-					int j=strlen(stoppos);
-					for(int i=0;i<j;i++)
-					{
-						decfloatnum+=jie*(*stoppos - '0');
-						stoppos=stoppos+sizeof(char);
-						jie/=8;
-					}
-					decnum=decintnum+decfloatnum;
-					$$=(float)decnum;
+					$$=_my_atof($1,8);
 					}
 		|	HEFLOAT	{
-					char* stoppos;
-					char buffer[64];
-					double decfloatnum=0.0;
-					long decintnum;
-					double decnum;
-					double	jie=1.0/16;
-					$1=strlwr($1);
-					decintnum=strtol($1,&stoppos,16);
-					stoppos=stoppos+sizeof(char);
-					int j=strlen(stoppos);
-					for(int i=0;i<j;i++)
-					{
-						if(*stoppos>'9')*stoppos-=39;
-						decfloatnum+=jie*(*stoppos - '0');
-						stoppos=stoppos+sizeof(char);
-						jie/=16;
-					}
-					decnum=decintnum+decfloatnum;
-					$$=(float)decnum;
+					$$=_my_atof($1,16);
 					}
 		|	LPARENTHESE	FLOAT RPARENTHESE E	{
 					printf("FLOATNUM->(float)E\n");
