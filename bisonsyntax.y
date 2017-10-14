@@ -32,6 +32,8 @@
 %type	<Vn>E
 %type	<Vn>LVALUE
 %type	<Vn>ARRSIZE
+%type	<Vn>DECLARE
+%type	<itype>TYPE
 %token VOID
 %token INT
 %token FLOAT
@@ -111,10 +113,18 @@
 		|	LVALUE		{printf("expr->LVALUE\n");}
 		|				{printf("expr->null\n");}
 		;
-	DECLARE	:	TYPE	LVALUE	{printf("DECLARE->TYPE LVALUE\n");}
-			|	TYPE	LVALUE	COMMA	DECLARE	{printf("DECLARE->TYPE LVALUE,DECLARE\n");}
-			|	ARRAYDECLARE	{printf("DECLARE->ARRAYDECLARE\n");}
-			|	ARRAYDECLARE	COMMA	DECLARE	{printf("DECLARE->ARRAYDECLARE,DECLARE\n");}
+	DECLARE	:	TYPE	LVALUE	{
+						printf("DECLARE->TYPE LVALUE\n");
+					}
+			|	TYPE	LVALUE	COMMA	DECLARE	{
+						printf("DECLARE->TYPE LVALUE,DECLARE\n");
+					}
+			|	ARRAYDECLARE	{
+						printf("DECLARE->ARRAYDECLARE\n");
+					}
+			|	ARRAYDECLARE	COMMA	DECLARE	{
+						printf("DECLARE->ARRAYDECLARE,DECLARE\n");
+					}
 			;
 	ARRAYDECLARE	:	TYPE	LBRACKET	ARRSIZE	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE	{
 						printf("DECLARE->TYPE[ARRSIZE]DEFINITE_ARRAYSIZE LVALUE\n");
@@ -133,18 +143,46 @@
 						;
 	LVALUE	:	ID			{
 					printf("LVALUE->ID:%s\n",$1);
-					value *tmp=_new_value();
-					//tmp->isvariable=1;
-					//$$=tmp;
+					//may use by declare or usage
+					$$=formVn(0,1,$1,"",0);
 					}	
 			|	ADDR	ID	{
 					printf("LVALUE->&ID\n");
-					value *tmp=_new_value();
-					//tmp->isaddr=1;
-					//$$=tmp;
+					//may use by declare or usage
+					$$=formVn(0,2,$2,"",0);
 					}
 			|	ID	LBRACKET	ARRSIZE	RBRACKET	{
+					// NOT DECLARE, IT MUST BE USAGE OF ARRAY
 					printf("LVALUE->ID[ARRSIZE]\n");
+					char* offset;
+					char name[100];
+					char buff[255];
+					int expect_type[5]={2,3,6,7,9};
+					$$=useage_of_id($1,expect_type,@1.first_line, @1.first_column,
+						@1.last_line, @1.last_column);
+					
+					if(!$$->addr){return;}
+					else{
+						
+						sprintf(name,"%s",($$->addr)->name);
+						$$->addr=newtemp();
+						sprintf(buff,"%s:=%s",($$->addr)->name,name);
+						printf("gen:	%s\n",buff);
+						//gen(buff);
+					}
+					if($3->addr==0)
+					{
+						//negative arrsize
+						//just new temp
+					}else{
+						offset=($3->addr)->name;
+						//(offset*typesize) caculate in arrsize
+						//code+: newtemp=id+offset	
+						sprintf(buff,"%s:=%s+%s",$$->addr,$$->addr,offset);
+						printf("gen:	%s\n",buff);
+						//gen(buff);
+					}
+					
 					}
 			|	ID	LPARENTHESE	expr	RPARENTHESE	{
 					printf("LVALUE->ID(expr)\n");
@@ -154,26 +192,42 @@
 					}
 			|	LVALUE	ASSIGNMENT	LVALUE			{
 					printf("LVALUE->LVALUE=LVALUE\n");
+					
 					}		
 			|	LVALUE	ASSIGNMENT	E				{
 					printf("LVALUE->LVALUE=E\n");
+					//newtemp=$3.addr.name; (E)
+					//$1.addr.name=newtemp
+					//$$.addr.name=$1.addr.name
 					}	
 			|	LVALUE	COMMA	LVALUE				{
 					printf("LVALUE->LVALUE,LVALUE\n");
+					//may from normal, or array
+					//if(!$1.addr)
+					//$1.addr.name=$3.addr.name;
+					//$$.addr.name=$1.addr.name
 					}
 			;
-	TYPE	:	VOID	{printf("TYPE->VOID\n");}
-			|	INT		{printf("TYPE->INT\n");}
-			|	FLOAT	{printf("TYPE->FLOAT\n");}
-			|	CHAR	{printf("TYPE->CHAR\n");}
-			|	STRING	{printf("TYPE->STRING\n");}
+	TYPE	:	VOID	{printf("TYPE->VOID\n");$$=8;}
+			|	INT		{printf("TYPE->INT\n");$$=0;}
+			|	FLOAT	{printf("TYPE->FLOAT\n");$$=1;}
+			|	CHAR	{printf("TYPE->CHAR\n");$$=4;}
+			|	STRING	{printf("TYPE->STRING\n");$$=5;}
 			;
 	ARRSIZE	:	ID		{
 							printf("ARRSIZE->ID:%s\n",$1);
 							int expect_type[1]={0};
 							$$=useage_of_id($1,expect_type,@1.first_line, @1.first_column,
 								   @1.last_line, @1.last_column);
-								   
+							char name[100];
+							char buff[255];
+							if(!$$->addr)return;
+							sprintf(name,"%s",($$->addr)->name);
+							$$->addr=newtemp();
+							sprintf(buff,"%s:=%s * %d",($$->addr)->name,name,type_size_map[0]);
+							printf("gen:	%s\n",buff);
+							//gen(buff);
+							//arrsize.addr=newtemp;gen(arrsize.addr = name*typesize);	   
 							
 						}
 			|	INTNUM	{
@@ -230,6 +284,7 @@
 					$$=$1;
 					//show_Vn($$);
 				}
+		|	E	COMMA	E	{printf("E->E,E\n");}
 		;
 	
 	F	:	LVALUE	{
