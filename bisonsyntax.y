@@ -134,13 +134,13 @@
 	LVALUE	:	ID			{
 					printf("LVALUE->ID:%s\n",$1);
 					value *tmp=_new_value();
-					tmp->isvariable=1;
+					//tmp->isvariable=1;
 					//$$=tmp;
 					}	
 			|	ADDR	ID	{
 					printf("LVALUE->&ID\n");
 					value *tmp=_new_value();
-					tmp->isaddr=1;
+					//tmp->isaddr=1;
 					//$$=tmp;
 					}
 			|	ID	LBRACKET	ARRSIZE	RBRACKET	{
@@ -173,19 +173,19 @@
 							int expect_type[1]={0};
 							value ret_val=_find_id_from_block(_get_block_pos(),$1,expect_type);
 							//printf("	idval:%ld\n",ret_val.idval);
-							if(ret_val.idval<0){
+							if(ret_val.state!=0){
 							//error deal
-								if(ret_val.idval==-1){
+								if(ret_val.state==-2){
 									fprintf (stderr,
-								   "undeclared arument '%s' ,at l%d,c%d-l%d,c%d",
+								   "undeclared argument '%s' ,at l%d,c%d-l%d,c%d",
 								   $1,
 								   @1.first_line, @1.first_column,
 								   @1.last_line, @1.last_column);
 								}
-								else{
+								else if(ret_val.state==1){
 									fprintf (stderr,
 								   "expected '%s' but argument is of type '%s' ,at l%d,c%d-l%d,c%d",
-								   typemap[0],typemap[ret_val.idval+20],
+								   typemap[0],typemap[(ret_val.addr)->type],
 								   @1.first_line, @1.first_column,
 								   @1.last_line, @1.last_column);
 								}
@@ -197,6 +197,7 @@
 								//arrsize.size=size
 								//arrsize.length=length
 								//arrsize.number=number
+								//$$=formVn();
 							}
 						
 						}

@@ -567,11 +567,11 @@ static const yytype_uint16 yyrline[] =
      105,   106,   108,   109,   110,   111,   112,   114,   115,   116,
      117,   119,   122,   125,   129,   132,   134,   140,   146,   149,
      152,   155,   158,   161,   165,   166,   167,   168,   169,   171,
-     203,   207,   208,   209,   210,   212,   213,   214,   215,   218,
-     221,   224,   225,   227,   230,   234,   235,   237,   238,   239,
-     240,   241,   242,   243,   244,   246,   247,   248,   249,   250,
-     251,   252,   259,   264,   271,   278,   286,   305,   308,   311,
-     314,   317,   321,   324,   327,   330,   333
+     204,   208,   209,   210,   211,   213,   214,   215,   216,   219,
+     222,   225,   226,   228,   231,   235,   236,   238,   239,   240,
+     241,   242,   243,   244,   245,   247,   248,   249,   250,   251,
+     252,   253,   260,   265,   272,   279,   287,   306,   309,   312,
+     315,   318,   322,   325,   328,   331,   334
 };
 #endif
 
@@ -1921,7 +1921,7 @@ yyreduce:
     {
 					printf("LVALUE->ID:%s\n",(yyvsp[(1) - (1)].stringtype));
 					value *tmp=_new_value();
-					tmp->isvariable=1;
+					//tmp->isvariable=1;
 					//$$=tmp;
 					}
     break;
@@ -1932,7 +1932,7 @@ yyreduce:
     {
 					printf("LVALUE->&ID\n");
 					value *tmp=_new_value();
-					tmp->isaddr=1;
+					//tmp->isaddr=1;
 					//$$=tmp;
 					}
     break;
@@ -2023,19 +2023,19 @@ yyreduce:
 							int expect_type[1]={0};
 							value ret_val=_find_id_from_block(_get_block_pos(),(yyvsp[(1) - (1)].stringtype),expect_type);
 							//printf("	idval:%ld\n",ret_val.idval);
-							if(ret_val.idval<0){
+							if(ret_val.state!=0){
 							//error deal
-								if(ret_val.idval==-1){
+								if(ret_val.state==-2){
 									fprintf (stderr,
 								   "undeclared arument '%s' ,at l%d,c%d-l%d,c%d",
 								   (yyvsp[(1) - (1)].stringtype),
 								   (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column,
 								   (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column);
 								}
-								else{
+								else if(ret_val.state==1){
 									fprintf (stderr,
 								   "expected '%s' but argument is of type '%s' ,at l%d,c%d-l%d,c%d",
-								   typemap[0],typemap[ret_val.idval+20],
+								   typemap[0],typemap[(ret_val.addr)->type],
 								   (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column,
 								   (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column);
 								}
@@ -2047,6 +2047,7 @@ yyreduce:
 								//arrsize.size=size
 								//arrsize.length=length
 								//arrsize.number=number
+								//$$=formVn();
 							}
 						
 						}
@@ -2054,7 +2055,7 @@ yyreduce:
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 203 "./bisonsyntax.y"
+#line 204 "./bisonsyntax.y"
     {
 						printf("ARRSIZE->INTNUM\n");
 						}
@@ -2062,49 +2063,49 @@ yyreduce:
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 207 "./bisonsyntax.y"
+#line 208 "./bisonsyntax.y"
     {printf("RARRAY->{E},RARRAY\n");}
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 208 "./bisonsyntax.y"
+#line 209 "./bisonsyntax.y"
     {printf("RARRAY->{RARRAY},RARRAY\n");}
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 209 "./bisonsyntax.y"
+#line 210 "./bisonsyntax.y"
     {printf("RARRAY->{E}\n");}
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 210 "./bisonsyntax.y"
+#line 211 "./bisonsyntax.y"
     {printf("RARRAY->{RARRAY}\n");}
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 212 "./bisonsyntax.y"
+#line 213 "./bisonsyntax.y"
     {printf("Cexpr->if C then S else S\n");}
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 213 "./bisonsyntax.y"
+#line 214 "./bisonsyntax.y"
     {printf("Cexpr->if C then S\n");}
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 214 "./bisonsyntax.y"
+#line 215 "./bisonsyntax.y"
     {printf("Cexpr->while C do S\n");}
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 215 "./bisonsyntax.y"
+#line 216 "./bisonsyntax.y"
     {
 				printf("Cexpr->for(expr;expr;expr)S\n");
 				}
@@ -2112,7 +2113,7 @@ yyreduce:
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 218 "./bisonsyntax.y"
+#line 219 "./bisonsyntax.y"
     {
 					printf("Cexpr->DO S WHILE (IC)\n");
 				}
@@ -2120,7 +2121,7 @@ yyreduce:
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 221 "./bisonsyntax.y"
+#line 222 "./bisonsyntax.y"
     {
 					printf("Cexpr->SWITCH	expr {SWITCH_CASE}\n");
 				}
@@ -2128,19 +2129,19 @@ yyreduce:
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 224 "./bisonsyntax.y"
+#line 225 "./bisonsyntax.y"
     {printf("Cexpr->BREAK;\n");}
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 225 "./bisonsyntax.y"
+#line 226 "./bisonsyntax.y"
     {printf("Cexpr->CONTINUE;\n");}
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 227 "./bisonsyntax.y"
+#line 228 "./bisonsyntax.y"
     {
 					printf("SWITCH_CASE->CASE expr:S BREAK;SWITCH_CASE\n");
 				}
@@ -2148,109 +2149,109 @@ yyreduce:
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 230 "./bisonsyntax.y"
+#line 231 "./bisonsyntax.y"
     {printf("SWITCH_CASE->null\n");}
     break;
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 234 "./bisonsyntax.y"
+#line 235 "./bisonsyntax.y"
     {printf("C->(IC)\n");}
     break;
 
   case 56:
 /* Line 1792 of yacc.c  */
-#line 235 "./bisonsyntax.y"
+#line 236 "./bisonsyntax.y"
     {printf("C->IC\n");}
     break;
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 237 "./bisonsyntax.y"
+#line 238 "./bisonsyntax.y"
     {printf("IC->E == E\n");}
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 238 "./bisonsyntax.y"
+#line 239 "./bisonsyntax.y"
     {printf("IC->E < E\n");}
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 239 "./bisonsyntax.y"
+#line 240 "./bisonsyntax.y"
     {printf("IC->E > E\n");}
     break;
 
   case 60:
 /* Line 1792 of yacc.c  */
-#line 240 "./bisonsyntax.y"
+#line 241 "./bisonsyntax.y"
     {printf("IC->E != E\n");}
     break;
 
   case 61:
 /* Line 1792 of yacc.c  */
-#line 241 "./bisonsyntax.y"
+#line 242 "./bisonsyntax.y"
     {printf("IC->E <= E\n");}
     break;
 
   case 62:
 /* Line 1792 of yacc.c  */
-#line 242 "./bisonsyntax.y"
+#line 243 "./bisonsyntax.y"
     {printf("IC->E >= E\n");}
     break;
 
   case 63:
 /* Line 1792 of yacc.c  */
-#line 243 "./bisonsyntax.y"
+#line 244 "./bisonsyntax.y"
     {printf("IC->TRUE\n");}
     break;
 
   case 64:
 /* Line 1792 of yacc.c  */
-#line 244 "./bisonsyntax.y"
+#line 245 "./bisonsyntax.y"
     {printf("IC->FALSE\n");}
     break;
 
   case 65:
 /* Line 1792 of yacc.c  */
-#line 246 "./bisonsyntax.y"
+#line 247 "./bisonsyntax.y"
     {printf("E->E+E\n");}
     break;
 
   case 66:
 /* Line 1792 of yacc.c  */
-#line 247 "./bisonsyntax.y"
+#line 248 "./bisonsyntax.y"
     {printf("E->E-E\n");}
     break;
 
   case 67:
 /* Line 1792 of yacc.c  */
-#line 248 "./bisonsyntax.y"
+#line 249 "./bisonsyntax.y"
     {printf("E->E*E\n");}
     break;
 
   case 68:
 /* Line 1792 of yacc.c  */
-#line 249 "./bisonsyntax.y"
+#line 250 "./bisonsyntax.y"
     {printf("E->E/E\n");}
     break;
 
   case 69:
 /* Line 1792 of yacc.c  */
-#line 250 "./bisonsyntax.y"
+#line 251 "./bisonsyntax.y"
     {printf("E->-E\n");}
     break;
 
   case 70:
 /* Line 1792 of yacc.c  */
-#line 251 "./bisonsyntax.y"
+#line 252 "./bisonsyntax.y"
     {printf("E->(E)\n");}
     break;
 
   case 71:
 /* Line 1792 of yacc.c  */
-#line 252 "./bisonsyntax.y"
+#line 253 "./bisonsyntax.y"
     {
 					printf("E->F\n");
 					(yyval.Vn)=(yyvsp[(1) - (1)].Vn);
@@ -2260,7 +2261,7 @@ yyreduce:
 
   case 72:
 /* Line 1792 of yacc.c  */
-#line 259 "./bisonsyntax.y"
+#line 260 "./bisonsyntax.y"
     {
 				printf("F->LVALUE\n");
 				(yyval.Vn)=(yyvsp[(1) - (1)].Vn);
@@ -2270,7 +2271,7 @@ yyreduce:
 
   case 73:
 /* Line 1792 of yacc.c  */
-#line 264 "./bisonsyntax.y"
+#line 265 "./bisonsyntax.y"
     {
 				printf("F->INTNUM:%d\n",(yyvsp[(1) - (1)].itype));
 				char tmp[100];
@@ -2282,7 +2283,7 @@ yyreduce:
 
   case 74:
 /* Line 1792 of yacc.c  */
-#line 271 "./bisonsyntax.y"
+#line 272 "./bisonsyntax.y"
     {
 				printf("F->FLOATNUM:%f\n",(yyvsp[(1) - (1)].ftype));
 				char tmp[100];
@@ -2294,7 +2295,7 @@ yyreduce:
 
   case 75:
 /* Line 1792 of yacc.c  */
-#line 278 "./bisonsyntax.y"
+#line 279 "./bisonsyntax.y"
     {
 				
 				char tmp[100];
@@ -2307,7 +2308,7 @@ yyreduce:
 
   case 76:
 /* Line 1792 of yacc.c  */
-#line 286 "./bisonsyntax.y"
+#line 287 "./bisonsyntax.y"
     {
 				
 				int j=strlen((yyvsp[(1) - (1)].stringtype));
@@ -2330,7 +2331,7 @@ yyreduce:
 
   case 77:
 /* Line 1792 of yacc.c  */
-#line 305 "./bisonsyntax.y"
+#line 306 "./bisonsyntax.y"
     {
 					(yyval.itype)=_my_atoi((yyvsp[(1) - (1)].stringtype),10);
 					}
@@ -2338,7 +2339,7 @@ yyreduce:
 
   case 78:
 /* Line 1792 of yacc.c  */
-#line 308 "./bisonsyntax.y"
+#line 309 "./bisonsyntax.y"
     {
 					(yyval.itype)=_my_atoi((yyvsp[(1) - (1)].stringtype),16);
 				}
@@ -2346,7 +2347,7 @@ yyreduce:
 
   case 79:
 /* Line 1792 of yacc.c  */
-#line 311 "./bisonsyntax.y"
+#line 312 "./bisonsyntax.y"
     {
 					(yyval.itype)=_my_atoi((yyvsp[(1) - (1)].stringtype),8);
 				}
@@ -2354,7 +2355,7 @@ yyreduce:
 
   case 80:
 /* Line 1792 of yacc.c  */
-#line 314 "./bisonsyntax.y"
+#line 315 "./bisonsyntax.y"
     {
 					printf("INTNUM->(int)E\n");
 				}
@@ -2362,7 +2363,7 @@ yyreduce:
 
   case 81:
 /* Line 1792 of yacc.c  */
-#line 317 "./bisonsyntax.y"
+#line 318 "./bisonsyntax.y"
     {
 					printf("INTNUM->int(E)\n");
 				}
@@ -2370,7 +2371,7 @@ yyreduce:
 
   case 82:
 /* Line 1792 of yacc.c  */
-#line 321 "./bisonsyntax.y"
+#line 322 "./bisonsyntax.y"
     {
 					(yyval.ftype)=_my_atof((yyvsp[(1) - (1)].stringtype),10);
 					}
@@ -2378,7 +2379,7 @@ yyreduce:
 
   case 83:
 /* Line 1792 of yacc.c  */
-#line 324 "./bisonsyntax.y"
+#line 325 "./bisonsyntax.y"
     {
 					(yyval.ftype)=_my_atof((yyvsp[(1) - (1)].stringtype),8);
 					}
@@ -2386,7 +2387,7 @@ yyreduce:
 
   case 84:
 /* Line 1792 of yacc.c  */
-#line 327 "./bisonsyntax.y"
+#line 328 "./bisonsyntax.y"
     {
 					(yyval.ftype)=_my_atof((yyvsp[(1) - (1)].stringtype),16);
 					}
@@ -2394,7 +2395,7 @@ yyreduce:
 
   case 85:
 /* Line 1792 of yacc.c  */
-#line 330 "./bisonsyntax.y"
+#line 331 "./bisonsyntax.y"
     {
 					printf("FLOATNUM->(float)E\n");
 					}
@@ -2402,7 +2403,7 @@ yyreduce:
 
   case 86:
 /* Line 1792 of yacc.c  */
-#line 333 "./bisonsyntax.y"
+#line 334 "./bisonsyntax.y"
     {
 					printf("FLOATNUM->float(E)\n");
 					}
@@ -2410,7 +2411,7 @@ yyreduce:
 
 
 /* Line 1792 of yacc.c  */
-#line 2414 "bisonsyntax.tab.c"
+#line 2415 "bisonsyntax.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2649,7 +2650,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 338 "./bisonsyntax.y"
+#line 339 "./bisonsyntax.y"
 
 void yyerror (char const *s) {
    fprintf (stderr, "%s\n", s);
