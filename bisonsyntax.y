@@ -17,6 +17,7 @@
 	int itype;
 	float ftype;
 	value* thisval;
+	vnstruct Vn;
 }
 %token <stringtype>ID 
 %token <stringtype>DEC 
@@ -27,9 +28,9 @@
 %token <stringtype>OCFLOAT 
 %type	<ftype>FLOATNUM
 %type	<itype>INTNUM
-%type	<thisval>F
-%type	<thisval>LVALUE
-%type	<itype>ARRSIZE
+%type	<Vn>F
+%type	<Vn>LVALUE
+%type	<Vn>ARRSIZE
 %token VOID
 %token INT
 %token FLOAT
@@ -133,13 +134,13 @@
 					printf("LVALUE->ID:%s\n",$1);
 					value *tmp=_new_value();
 					tmp->isvariable=1;
-					$$=tmp;
+					//$$=tmp;
 					}	
 			|	ADDR	ID	{
 					printf("LVALUE->&ID\n");
 					value *tmp=_new_value();
 					tmp->isaddr=1;
-					$$=tmp;
+					//$$=tmp;
 					}
 			|	ID	LBRACKET	ARRSIZE	RBRACKET	{
 					printf("LVALUE->ID[ARRSIZE]\n");
@@ -167,17 +168,34 @@
 			|	STRING	{printf("TYPE->STRING\n");}
 			;
 	ARRSIZE	:	ID		{
-						printf("ARRSIZE->ID\n");
-						int expect_type[1]={0};
-						value ret_val=_find_id_from_block(_get_block_pos(),$1,expect_type);
-						//printf("	idval:%ld\n",ret_val.idval);
-						if(ret_val.idval<0){
-						//error deal
-							fprintf (stderr,
-							   "expected '%s' but argument is of type '%s', l%d,c%d-l%d,c%d",
-							   typemap[0],typemap[ret_val.idval+20],
-							   @1.first_line, @1.first_column,
-							   @1.last_line, @1.last_column);
+							printf("ARRSIZE->ID\n");
+							int expect_type[1]={0};
+							value ret_val=_find_id_from_block(_get_block_pos(),$1,expect_type);
+							//printf("	idval:%ld\n",ret_val.idval);
+							if(ret_val.idval<0){
+							//error deal
+								if(ret_val.idval==-1){
+									fprintf (stderr,
+								   "undeclared arument '%s' ,at l%d,c%d-l%d,c%d",
+								   $1,
+								   @1.first_line, @1.first_column,
+								   @1.last_line, @1.last_column);
+								}
+								else{
+									fprintf (stderr,
+								   "expected '%s' but argument is of type '%s' ,at l%d,c%d-l%d,c%d",
+								   typemap[0],typemap[ret_val.idval+20],
+								   @1.first_line, @1.first_column,
+								   @1.last_line, @1.last_column);
+								}
+								
+							}else{
+								//do semantic action to get value from that address idval
+								//arrsize have code,no value
+								//arrsize.addr=idval
+								//arrsize.size=size
+								//arrsize.length=length
+								//arrsize.number=number
 							}
 						
 						}
@@ -232,36 +250,33 @@
 		|	LPARENTHESE	E	RPARENTHESE	{printf("E->(E)\n");}
 		|	F	{
 					printf("E->F\n");
-					show_value(*$1);
+					//show_value(*$1);
 				}
 		;
 	
 	F	:	LVALUE	{printf("F->LVALUE\n");}
 		|	INTNUM	{
 				printf("F->INTNUM:%d\n",$1);
-				value* tempval=_new_value();
-				tempval->isint=1;
-				tempval->itype=$1;
-				$$=tempval;
-				}
+				char tmp[100];
+				sprintf(tmp,"%d",$1);
+				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp);
+				
+			}
 		|	FLOATNUM	{
 				printf("F->FLOATNUM:%f\n",$1);
-				value* tempval=_new_value();
-				tempval->isfloat=1;
-				tempval->ftype=$1;
-				$$=tempval;
-				}
+				char tmp[100];
+				sprintf(tmp,"%f",$1);
+				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp);
+			}
 		|	CONSTCHAR	{
-				printf("F->CONSTCHAR\n");
-				value* tempval=_new_value();
-				tempval->ischar=1;
-				tempval->chartype=$1[1];
-				$$=tempval;
-				}
+				
+				char tmp[100];
+				sprintf(tmp,"%c",$1[1]);
+				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp);
+				printf("F->CONSTCHAR:%s\n",tmp);
+			}
 		|	CONSTSTRING	{
-				printf("F->CONSTSTRING\n");
-				value* tempval=_new_value();
-				tempval->isstring=1;
+				
 				int j=strlen($1);
 				char *tempstr=strdup($1);
 				if(j>2)
@@ -270,11 +285,15 @@
 						tempstr[i-1]=tempstr[i];
 					tempstr[j-2]=0;
 				}else{
-					tempval->stringtype=0;
+					tempstr=strdup("");
 				}
-				tempval->stringtype=tempstr;
-				$$=tempval;
-				}
+				char tmp[j+1];
+				sprintf(tmp,"%s",tempstr);
+				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp);
+				printf("F->CONSTSTRING:%s\n",tmp);
+				//tempval->stringtype=tempstr;
+				//$$=tempval;
+			}
 		;
 	INTNUM	:	DEC	{
 					$$=_my_atoi($1,10);

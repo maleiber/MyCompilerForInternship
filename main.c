@@ -2,6 +2,7 @@
 typedef struct blocklist blocklist;
 typedef struct listnode listnode;
 typedef struct hashtable hashtable;
+
 #include "blocklist.h"
 #include "syntax.h"
 #include "lex.yy.c"

@@ -119,10 +119,11 @@ typedef union YYSTYPE
 	int itype;
 	float ftype;
 	value* thisval;
+	vnstruct Vn;
 
 
 /* Line 2058 of yacc.c  */
-#line 126 "bisonsyntax.tab.h"
+#line 127 "bisonsyntax.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
