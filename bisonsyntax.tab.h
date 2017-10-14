@@ -119,7 +119,7 @@ typedef union YYSTYPE
 	int itype;
 	float ftype;
 	value* thisval;
-	vnstruct Vn;
+	vnstruct* Vn;
 
 
 /* Line 2058 of yacc.c  */

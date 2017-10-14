@@ -17,7 +17,7 @@
 	int itype;
 	float ftype;
 	value* thisval;
-	vnstruct Vn;
+	vnstruct* Vn;
 }
 %token <stringtype>ID 
 %token <stringtype>DEC 
@@ -29,6 +29,7 @@
 %type	<ftype>FLOATNUM
 %type	<itype>INTNUM
 %type	<Vn>F
+%type	<Vn>E
 %type	<Vn>LVALUE
 %type	<Vn>ARRSIZE
 %token VOID
@@ -250,30 +251,37 @@
 		|	LPARENTHESE	E	RPARENTHESE	{printf("E->(E)\n");}
 		|	F	{
 					printf("E->F\n");
-					//show_value(*$1);
+					$$=$1;
+					//show_Vn($$);
 				}
 		;
 	
-	F	:	LVALUE	{printf("F->LVALUE\n");}
+	F	:	LVALUE	{
+				printf("F->LVALUE\n");
+				$$=$1;
+				show_Vn($$);
+			}
 		|	INTNUM	{
 				printf("F->INTNUM:%d\n",$1);
 				char tmp[100];
 				sprintf(tmp,"%d",$1);
-				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp);
-				
+				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp,0);
+				show_Vn($$);
 			}
 		|	FLOATNUM	{
 				printf("F->FLOATNUM:%f\n",$1);
 				char tmp[100];
 				sprintf(tmp,"%f",$1);
-				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp);
+				$$=formVn(formIdAddr("",1,0,0,0),1,"",tmp,0);
+				show_Vn($$);
 			}
 		|	CONSTCHAR	{
 				
 				char tmp[100];
 				sprintf(tmp,"%c",$1[1]);
-				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp);
+				$$=formVn(formIdAddr("",4,0,0,0),1,"",tmp,0);
 				printf("F->CONSTCHAR:%s\n",tmp);
+				show_Vn($$);
 			}
 		|	CONSTSTRING	{
 				
@@ -289,10 +297,9 @@
 				}
 				char tmp[j+1];
 				sprintf(tmp,"%s",tempstr);
-				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp);
+				$$=formVn(formIdAddr("",5,0,0,0),1,"",tmp,0);
 				printf("F->CONSTSTRING:%s\n",tmp);
-				//tempval->stringtype=tempstr;
-				//$$=tempval;
+				show_Vn($$);
 			}
 		;
 	INTNUM	:	DEC	{
