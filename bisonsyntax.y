@@ -169,37 +169,12 @@
 			|	STRING	{printf("TYPE->STRING\n");}
 			;
 	ARRSIZE	:	ID		{
-							printf("ARRSIZE->ID\n");
+							printf("ARRSIZE->ID:%s\n",$1);
 							int expect_type[1]={0};
-							value ret_val=_find_id_from_block(_get_block_pos(),$1,expect_type);
-							//printf("	idval:%ld\n",ret_val.idval);
-							if(ret_val.state!=0){
-							//error deal
-								if(ret_val.state==-2){
-									fprintf (stderr,
-								   "undeclared argument '%s' ,at l%d,c%d-l%d,c%d",
-								   $1,
-								   @1.first_line, @1.first_column,
+							$$=useage_of_id($1,expect_type,@1.first_line, @1.first_column,
 								   @1.last_line, @1.last_column);
-								}
-								else if(ret_val.state==1){
-									fprintf (stderr,
-								   "expected '%s' but argument is of type '%s' ,at l%d,c%d-l%d,c%d",
-								   typemap[0],typemap[(ret_val.addr)->type],
-								   @1.first_line, @1.first_column,
-								   @1.last_line, @1.last_column);
-								}
-								
-							}else{
-								//do semantic action to get value from that address idval
-								//arrsize have code,no value
-								//arrsize.addr=idval
-								//arrsize.size=size
-								//arrsize.length=length
-								//arrsize.number=number
-								//$$=formVn();
-							}
-						
+								   
+							
 						}
 			|	INTNUM	{
 						printf("ARRSIZE->INTNUM\n");
