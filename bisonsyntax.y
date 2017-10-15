@@ -129,12 +129,10 @@
 	ARRAYDECLARE	:	TYPE	LBRACKET	ARRSIZE	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE	{
 						printf("DECLARE->TYPE[ARRSIZE]DEFINITE_ARRAYSIZE LVALUE\n");
 						}	
-					|	TYPE	LBRACKET	RBRACKET	DEFINITE_ARRAYSIZE	ID	{
-						printf("DECLARE->TYPE[]DEFINITE_ARRAYSIZE ID\n");
+					|	TYPE	LBRACKET	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE	{
+						printf("DECLARE->TYPE[]DEFINITE_ARRAYSIZE LVALUE\n");
 						}
-					|	TYPE	LBRACKET	RBRACKET	DEFINITE_ARRAYSIZE	ID	ASSIGNMENT	RARRAY	{
-						printf("DECLARE->TYPE[]DEFINITE_ARRAYSIZE ID={RARRAY}\n");
-						}
+					
 					;
 	DEFINITE_ARRAYSIZE	:	LBRACKET	ARRSIZE	RBRACKET	DEFINITE_ARRAYSIZE	{
 								printf("DEFINITE_ARRAYSIZE->[ARRSIZE]	DEFINITE_ARRAYSIZE\n");
@@ -144,12 +142,12 @@
 	LVALUE	:	ID			{
 					printf("LVALUE->ID:%s\n",$1);
 					//may use by declare or usage
-					$$=formVn(0,1,$1,"",0);
+					$$=formVn(0,1,"",$1,0,0);
 					}	
 			|	ADDR	ID	{
 					printf("LVALUE->&ID\n");
 					//may use by declare or usage
-					$$=formVn(0,2,$2,"",0);
+					$$=formVn(0,2,$2,"",0,0);
 					}
 			|	ID	LBRACKET	ARRSIZE	RBRACKET	{
 					// NOT DECLARE, IT MUST BE USAGE OF ARRAY
@@ -197,8 +195,8 @@
 			|	LVALUE	ASSIGNMENT	E				{
 					printf("LVALUE->LVALUE=E\n");
 					//newtemp=$3.addr.name; (E)
-					//$1.addr.name=newtemp
-					//$$.addr.name=$1.addr.name
+					//gen $1.addr.name=newtemp
+					//gen $$.addr.name=$1.addr.name
 					}	
 			|	LVALUE	COMMA	LVALUE				{
 					printf("LVALUE->LVALUE,LVALUE\n");
@@ -282,9 +280,24 @@
 		|	F	{
 					printf("E->F\n");
 					$$=$1;
-					//show_Vn($$);
+					show_Vn($$);
 				}
-		|	E	COMMA	E	{printf("E->E,E\n");}
+		|	E	COMMA	E	{
+					printf("E->E,E\n");
+					printf("$1E:\n");
+					show_Vn($1);
+					printf("$3E:\n");
+					show_Vn($3);
+					$$=formVn(formIdAddr("",-1,0,0,0),($1->code)->def,($1->code)->key,($1->code)->val,$3->code,0);
+					printf("$$E:\n");
+					show_Vn($$);
+				}
+		|	LBRACE	E	RBRACE	{
+					printf("E->{E}\n");
+					$$=formVn(formIdAddr("",-1,0,0,0),1,"","",0,$2->code);
+					printf("$$E:\n");
+					show_Vn($$);
+				}
 		;
 	
 	F	:	LVALUE	{
@@ -294,23 +307,23 @@
 			}
 		|	INTNUM	{
 				printf("F->INTNUM:%d\n",$1);
-				char tmp[100];
+				char *tmp=(char*)malloc(sizeof(char *)*255);
 				sprintf(tmp,"%d",$1);
-				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp,0);
+				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp,0,0);
 				show_Vn($$);
 			}
 		|	FLOATNUM	{
 				printf("F->FLOATNUM:%f\n",$1);
-				char tmp[100];
+				char *tmp=(char*)malloc(sizeof(char *)*255);
 				sprintf(tmp,"%f",$1);
-				$$=formVn(formIdAddr("",1,0,0,0),1,"",tmp,0);
+				$$=formVn(formIdAddr("",1,0,0,0),1,"",tmp,0,0);
 				show_Vn($$);
 			}
 		|	CONSTCHAR	{
 				
-				char tmp[100];
+				char *tmp=(char*)malloc(sizeof(char *)*255);
 				sprintf(tmp,"%c",$1[1]);
-				$$=formVn(formIdAddr("",4,0,0,0),1,"",tmp,0);
+				$$=formVn(formIdAddr("",4,0,0,0),1,"",tmp,0,0);
 				printf("F->CONSTCHAR:%s\n",tmp);
 				show_Vn($$);
 			}
@@ -328,7 +341,7 @@
 				}
 				char tmp[j+1];
 				sprintf(tmp,"%s",tempstr);
-				$$=formVn(formIdAddr("",5,0,0,0),1,"",tmp,0);
+				$$=formVn(formIdAddr("",5,0,0,0),1,"",tmp,0,0);
 				printf("F->CONSTSTRING:%s\n",tmp);
 				show_Vn($$);
 			}
