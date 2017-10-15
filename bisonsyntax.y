@@ -127,12 +127,49 @@
 					}
 			;
 	ARRAYDECLARE	:	TYPE	LBRACKET	ARRSIZE	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE	{
-						printf("DECLARE->TYPE[ARRSIZE]DEFINITE_ARRAYSIZE LVALUE\n");
+							printf("DECLARE->TYPE[ARRSIZE]DEFINITE_ARRAYSIZE LVALUE\n");
+							//need to backfill
+							//backfill("TYPE",$1)
 						}	
-					|	TYPE	LBRACKET	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE	{
-						printf("DECLARE->TYPE[]DEFINITE_ARRAYSIZE LVALUE\n");
+					|	TYPE	LBRACKET	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE	ASSIGNMENT	E{
+							printf("DECLARE->TYPE[]DEFINITE_ARRAYSIZE LVALUE = E\n");
+							//need to backfill
+							//backfill("TYPE",$1)
+							//gen("declare "+id+"address");length and size
+							//assignment
+							//int value=typetoarray[$1];
+							//char *name,*nextval;
+							int state=0,isthefirst=1;
+							//for i in $5->code->codelength
+							//isthefirst=1;
+							//name=$5->code->val;
+							//idaddr* preaddr;
+							//preaddr=distributeaddr();
+							//state=_blockfindandadd(_get_block_pos(),name,value,preaddr,0);
+							if(state==-1)
+							{
+								//checkarraysize(outer-len,definite-arrarsize,E)
+								// gen addr_offset:=addr_id
+								//the outer len confirm by len of E
+								//int size=outer-len * definite-arrarsize
+								//nextval=E->codevalue
+								// for i in size
+								//	nextval=getnextval(nextval,isthefirst);
+								//  if isthefirst: isthefirst=0;
+								//	gen offset:=nextval;
+								//
+								//  gen addr_offset:=addr_offsetoffset+typesize
+							}
+							else{
+							}
 						}
-					
+					|	TYPE	LBRACKET	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE		{
+						printf("DECLARE->TYPE[]DEFINITE_ARRAYSIZE LVALUE\n");
+						//need to backfill
+						//backfill("TYPE",$1)
+						//gen("declare "+id+"address");length and size
+						
+						}
 					;
 	DEFINITE_ARRAYSIZE	:	LBRACKET	ARRSIZE	RBRACKET	DEFINITE_ARRAYSIZE	{
 								printf("DEFINITE_ARRAYSIZE->[ARRSIZE]	DEFINITE_ARRAYSIZE\n");
@@ -195,8 +232,8 @@
 			|	LVALUE	ASSIGNMENT	E				{
 					printf("LVALUE->LVALUE=E\n");
 					//newtemp=$3.addr.name; (E)
-					//gen $1.addr.name=newtemp
-					//gen $$.addr.name=$1.addr.name
+					//code $1.addr.name=newtemp
+					//code $$.addr.name=$1.addr.name
 					}	
 			|	LVALUE	COMMA	LVALUE				{
 					printf("LVALUE->LVALUE,LVALUE\n");
