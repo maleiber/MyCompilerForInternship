@@ -34,6 +34,8 @@
 %type	<Vn>ARRSIZE
 %type	<Vn>DECLARE
 %type	<itype>TYPE
+%type	<Vn>ARRAYDECLARE
+%type	<Vn>DEFINITE_ARRAYSIZE
 %token VOID
 %token INT
 %token FLOAT
@@ -127,12 +129,41 @@
 					}
 			;
 	ARRAYDECLARE	:	TYPE	LBRACKET	ARRSIZE	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE	{
-							printf("DECLARE->TYPE[ARRSIZE]DEFINITE_ARRAYSIZE LVALUE\n");
+							printf("ARRAYDECLARE->TYPE[ARRSIZE]DEFINITE_ARRAYSIZE LVALUE\n");
+							if($5==0){}
+							else{
+								
+								char *name=(char*)malloc(sizeof(char)*100);
+								char *oldname=(char*)malloc(sizeof(char)*100);
+								char *buff=(char*)malloc(sizeof(char)*255);
+								idaddr* temp;
+								sprintf(name,"%s",($3->addr)->name);
+								sprintf(oldname,"%s",($5->addr)->name);
+								$$=formVn(newtemp(),1,"",($3->code)->val,0,0);
+								sprintf(buff,"%s = %s * %s",($$->addr)->name,name,oldname);
+								vn_append_code($$,1,"",buff,$5->code,0);printf("gen:	%s\n",buff);
+								buff=(char*)malloc(sizeof(char)*255);
+								temp=newtemp();
+								sprintf(buff,"%s = %s * %d",temp->name,($$->addr)->name,type_size_map[$1]);
+								vn_append_code($$,1,"",buff,0,0);printf("gen:	%s\n",buff);
+								$$->addr=temp;
+								//name(size) is $$->addr, use it to alloc
+								//if(-1==_blockfindandadd(_get_block_pos(),name in lvalue,typetoarray[$1],0,$$->addr)){code_append($$,alloc_space(name,$$->addr));}
+								
+								//alloc finished nextis assign if lvalue needed
+								
+								show_Vn($$);
+								
+							}
 							//need to backfill
 							//backfill("TYPE",$1)
 						}	
 					|	TYPE	LBRACKET	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE	ASSIGNMENT	E{
-							printf("DECLARE->TYPE[]DEFINITE_ARRAYSIZE LVALUE = E\n");
+							printf("ARRAYDECLARE->TYPE[]DEFINITE_ARRAYSIZE LVALUE = E\n");
+							
+							
+							
+							
 							//need to backfill
 							//backfill("TYPE",$1)
 							//gen("declare "+id+"address");length and size
@@ -141,6 +172,7 @@
 							//char *name,*nextval;
 							int state=0,isthefirst=1;
 							//for i in $5->code->codelength
+							//{
 							//isthefirst=1;
 							//name=$5->code->val;
 							//idaddr* preaddr;
@@ -159,9 +191,11 @@
 								//	gen offset:=nextval;
 								//
 								//  gen addr_offset:=addr_offsetoffset+typesize
+								//blockfindandadd
 							}
 							else{
 							}
+							//}
 						}
 					|	TYPE	LBRACKET	RBRACKET	DEFINITE_ARRAYSIZE	LVALUE		{
 						printf("DECLARE->TYPE[]DEFINITE_ARRAYSIZE LVALUE\n");
@@ -172,14 +206,36 @@
 						}
 					;
 	DEFINITE_ARRAYSIZE	:	LBRACKET	ARRSIZE	RBRACKET	DEFINITE_ARRAYSIZE	{
-								printf("DEFINITE_ARRAYSIZE->[ARRSIZE]	DEFINITE_ARRAYSIZE\n");
+									printf("DEFINITE_ARRAYSIZE->[ARRSIZE]	DEFINITE_ARRAYSIZE\n");
+									if($4==0){$$=$2;show_Vn($$);}
+									else{
+										char *name=(char*)malloc(sizeof(char)*100);
+										char *oldname=(char*)malloc(sizeof(char)*100);
+										char *buff=(char*)malloc(sizeof(char)*255);
+										sprintf(name,"%s",($2->addr)->name);
+										sprintf(oldname,"%s",($4->addr)->name);
+										$$=formVn(newtemp(),1,"",($2->code)->val,0,0);
+																			
+										sprintf(buff,"%s = %s * %s",($$->addr)->name,name,oldname);
+										printf("gen:	%s\n",buff);
+										
+										vn_append_code($$,1,"",buff,$4->code,0);
+										
+										show_Vn($$);
+									}
+									
+								
 								}
-						|		{printf("DEFINITE_ARRAYSIZE->null\n");}
+						|		{
+								printf("DEFINITE_ARRAYSIZE->null\n");
+								$$=0;
+								}
 						;
 	LVALUE	:	ID			{
 					printf("LVALUE->ID:%s\n",$1);
 					//may use by declare or usage
 					$$=formVn(0,1,"",$1,0,0);
+					show_Vn($$);
 					}	
 			|	ADDR	ID	{
 					printf("LVALUE->&ID\n");
@@ -190,8 +246,9 @@
 					// NOT DECLARE, IT MUST BE USAGE OF ARRAY
 					printf("LVALUE->ID[ARRSIZE]\n");
 					char* offset;
-					char name[100];
-					char buff[255];
+					char *name=(char*)malloc(sizeof(char)*100);
+					char *buff=(char*)malloc(sizeof(char)*255);
+					idaddr* tmp;
 					int expect_type[5]={2,3,6,7,9};
 					$$=useage_of_id($1,expect_type,@1.first_line, @1.first_column,
 						@1.last_line, @1.last_column);
@@ -201,7 +258,8 @@
 						
 						sprintf(name,"%s",($$->addr)->name);
 						$$->addr=newtemp();
-						sprintf(buff,"%s:=%s",($$->addr)->name,name);
+						sprintf(buff,"%s := %s",($$->addr)->name,name);
+						vn_append_code($$,1,"",buff,0,0);
 						printf("gen:	%s\n",buff);
 						//gen(buff);
 					}
@@ -210,14 +268,18 @@
 						//negative arrsize
 						//just new temp
 					}else{
-						offset=($3->addr)->name;
+						tmp=newtemp();
 						//(offset*typesize) caculate in arrsize
 						//code+: newtemp=id+offset	
-						sprintf(buff,"%s:=%s+%s",$$->addr,$$->addr,offset);
+						sprintf(buff,"%s = %s * %s",tmp,($3->addr)->name,type_size_map[$$->addr->type]);
+						vn_append_code($$,1,"",buff,0,0);
+						printf("gen:	%s\n",buff);
+						sprintf(buff,"%s := %s + %s",$$->addr,$$->addr,offset);
+						vn_append_code($$,1,"",buff,0,0);
 						printf("gen:	%s\n",buff);
 						//gen(buff);
 					}
-					
+					show_Vn($$);
 					}
 			|	ID	LPARENTHESE	expr	RPARENTHESE	{
 					printf("LVALUE->ID(expr)\n");
@@ -227,16 +289,26 @@
 					}
 			|	LVALUE	ASSIGNMENT	LVALUE			{
 					printf("LVALUE->LVALUE=LVALUE\n");
-					
+					printf("	$1E:\n");
+					show_Vn($1);
+					printf("	$3E:\n");
+					show_Vn($3);
 					}		
 			|	LVALUE	ASSIGNMENT	E				{
-					printf("LVALUE->LVALUE=E\n");
+					printf("LVALUE->LVALUE=E\n	$1LVALUE:\n");
+					show_Vn($1);
+					printf("	$3E:\n");
+					show_Vn($3);
+					
 					//newtemp=$3.addr.name; (E)
 					//code $1.addr.name=newtemp
 					//code $$.addr.name=$1.addr.name
 					}	
 			|	LVALUE	COMMA	LVALUE				{
 					printf("LVALUE->LVALUE,LVALUE\n");
+					$$=$1;
+					code_append($1->code,$3->code);
+					show_Vn($$);
 					//may from normal, or array
 					//if(!$1.addr)
 					//$1.addr.name=$3.addr.name;
@@ -251,22 +323,35 @@
 			;
 	ARRSIZE	:	ID		{
 							printf("ARRSIZE->ID:%s\n",$1);
+							
 							int expect_type[1]={0};
 							$$=useage_of_id($1,expect_type,@1.first_line, @1.first_column,
 								   @1.last_line, @1.last_column);
-							char name[100];
-							char buff[255];
-							if(!$$->addr)return;
+							char *name=(char*)malloc(sizeof(char)*100);
+							char *buff=(char*)malloc(sizeof(char)*255);
+							if(!$$->addr){printf("addr of id is empty!\n");return;}
 							sprintf(name,"%s",($$->addr)->name);
-							$$->addr=newtemp();
-							sprintf(buff,"%s:=%s * %d",($$->addr)->name,name,type_size_map[0]);
+							$$=formVn(newtemp(),1,"",name,0,0);
+							sprintf(buff,"%s = %s",($$->addr)->name,name,type_size_map[0]);
 							printf("gen:	%s\n",buff);
+							sprintf(($$->code)->val,"%s",buff);
+							show_Vn($$);
 							//gen(buff);
 							//arrsize.addr=newtemp;gen(arrsize.addr = name*typesize);	   
 							
 						}
 			|	INTNUM	{
-						printf("ARRSIZE->INTNUM\n");
+							printf("ARRSIZE->INTNUM\n");
+							
+							char *name=(char*)malloc(sizeof(char)*100);
+							char *buff=(char*)malloc(sizeof(char)*255);
+							sprintf(name,"%d",$1);
+							$$=formVn(newtemp(),1,"",name,0,0);
+							
+							sprintf(buff,"%s = %s",($$->addr)->name,name);
+							printf("gen:	%s\n",buff);
+							sprintf(($$->code)->val,"%s",buff);
+							show_Vn($$);
 						}
 			;
 	RARRAY	:	LBRACE	E	RBRACE	COMMA	RARRAY			{printf("RARRAY->{E},RARRAY\n");}
@@ -317,6 +402,16 @@
 		|	F	{
 					printf("E->F\n");
 					$$=$1;
+					code_parellel_append($$->code,form_code_value_easy(1,"size","1"));
+					codevalue* cv_tmp1=form_code_value_easy(0,"code","");
+					codevalue* cv_tmp2=form_code_value_easy(0,"addr","");
+					codevalue* cv_tmp3=form_code_value_easy(0,"","");
+					char* buff=(char*)malloc(sizeof(char)*100);
+					sprintf(buff," = %s" ,($1->code)->val);
+					code_append(cv_tmp2,form_code_value_easy(1,"",buff));
+					code_append(cv_tmp1,cv_tmp3);
+					code_parellel_append(cv_tmp3,cv_tmp2);
+					code_parellel_append($$->code,cv_tmp1);
 					show_Vn($$);
 				}
 		|	E	COMMA	E	{
@@ -325,7 +420,23 @@
 					show_Vn($1);
 					printf("$3E:\n");
 					show_Vn($3);
-					$$=formVn(formIdAddr("",-1,0,0,0),($1->code)->def,($1->code)->key,($1->code)->val,$3->code,0);
+					char *buff=(char*)malloc(sizeof(char)*32);
+					codevalue* cv_size1=search_code_value_by_key($1->code,"size");
+					codevalue* cv_size2=search_code_value_by_key($3->code,"size");
+					codevalue* cv_code1=search_code_value_by_key($1->code,"code");
+					codevalue* cv_code2=search_code_value_by_key($3->code,"code");
+					int newsize=cv_size1->def+cv_size2->def;
+					sprintf(buff,"%d",newsize);
+			
+					$$=formVn(formIdAddr("",-1,0,0,0),1,"","",0,0);			
+					code_parellel_append($$->code,form_code_value_easy(newsize,"size",buff));
+					
+					code_append(cv_code2,(cv_code1)->nextval);
+					if(cv_code2)code_parellel_append($$->code,cv_code2);
+					
+					code_append_debar_parellel($$->code,$3->code,"err");
+					code_append_debar_parellel($$->code,$1->code,"err");
+					////$$=formVn(formIdAddr("",-1,0,0,0),($1->code)->def,($1->code)->key,($1->code)->val,$3->code,0);
 					printf("$$E:\n");
 					show_Vn($$);
 				}
@@ -337,10 +448,11 @@
 				}
 		;
 	
-	F	:	LVALUE	{
-				printf("F->LVALUE\n");
-				$$=$1;
+	F	:	ID	{
+				printf("F->ID\n");
+				$$=formVn(0,1,"",$1,0,0);
 				show_Vn($$);
+				
 			}
 		|	INTNUM	{
 				printf("F->INTNUM:%d\n",$1);
@@ -348,6 +460,7 @@
 				sprintf(tmp,"%d",$1);
 				$$=formVn(formIdAddr("",0,0,0,0),1,"",tmp,0,0);
 				show_Vn($$);
+				
 			}
 		|	FLOATNUM	{
 				printf("F->FLOATNUM:%f\n",$1);
@@ -384,6 +497,7 @@
 			}
 		;
 	INTNUM	:	DEC	{
+					
 					$$=_my_atoi($1,10);
 					}
 		|	HEX	{
