@@ -234,8 +234,33 @@
 	LVALUE	:	ID			{
 					printf("LVALUE->ID:%s\n",$1);
 					//may use by declare or usage
-					$$=formVn(0,1,"",$1,0,0);
-					show_Vn($$);
+					$$=formVn(formIdAddr("",-1,0,0,0),1,$1,"",0,0);	
+					char *buff=(char*)malloc(sizeof(char)*255);
+					
+					codevalue* cv_tmp1=form_code_value_easy(0,"code","");
+					codevalue* cv_tmp2=form_code_value_easy(0,"","");
+					codevalue* cv_tmp3=form_code_value_easy(0,"lassign","");
+					sprintf(buff," = & %s",$1);
+					codevalue* cv_tmp4=form_code_value_easy(0,"",buff);
+					codevalue* cv_tmp5=form_code_value_easy(0,"","");
+					codevalue* cv_tmp6=form_code_value_easy(0,"","& ");
+					codevalue* cv_tmp7=form_code_value_easy(0,"lassign","");
+					codevalue* cv_tmp8=form_code_value_easy(0,""," = & ");
+					codevalue* cv_tmp9=form_code_value_easy(0,"lassign","");
+					codevalue* cv_tmp10=form_code_value_easy(1,""," + 1");
+					code_append(cv_tmp8,cv_tmp10);
+					code_parellel_append(cv_tmp8,cv_tmp9);
+					code_append(cv_tmp6,cv_tmp8);
+					code_parellel_append(cv_tmp6,cv_tmp7);
+					code_parellel_append(cv_tmp5,cv_tmp6);
+					code_append(cv_tmp2,cv_tmp5);
+					code_append(cv_tmp3,cv_tmp4);
+					code_parellel_append(cv_tmp2,cv_tmp3);
+					code_append(cv_tmp1,cv_tmp2);
+					code_parellel_append($$->code,form_code_value_easy(1,"size","1"));
+					code_parellel_append($$->code,cv_tmp1);
+					
+					gen_Vn($$);
 					}	
 			|	ADDR	ID	{
 					printf("LVALUE->&ID\n");
@@ -249,17 +274,23 @@
 					char *name=(char*)malloc(sizeof(char)*100);
 					char *buff=(char*)malloc(sizeof(char)*255);
 					idaddr* tmp;
+					codevalue* cv_code;
 					int expect_type[5]={2,3,6,7,9};
 					$$=useage_of_id($1,expect_type,@1.first_line, @1.first_column,
 						@1.last_line, @1.last_column);
 					
+					int newsize=1;
+					
 					if(!$$->addr){return;}
 					else{
-						
+						sprintf(buff,"%d",newsize);			
+						code_parellel_append($$->code,form_code_value_easy(newsize,"size",buff));
+						cv_code=form_code_value_easy(1,"code","");
 						sprintf(name,"%s",($$->addr)->name);
-						$$->addr=newtemp();
-						sprintf(buff,"%s := %s",($$->addr)->name,name);
-						vn_append_code($$,1,"",buff,0,0);
+						tmp=newtemp();
+						sprintf(buff,"& %s = & %s",tmp->name,name);
+						code_append(cv_code,form_code_value_easy(1,"",buff));
+						//vn_append_code($$,1,"",buff,0,0);
 						printf("gen:	%s\n",buff);
 						//gen(buff);
 					}
@@ -272,14 +303,17 @@
 						//(offset*typesize) caculate in arrsize
 						//code+: newtemp=id+offset	
 						sprintf(buff,"%s = %s * %s",tmp,($3->addr)->name,type_size_map[$$->addr->type]);
-						vn_append_code($$,1,"",buff,0,0);
+						code_append(cv_code,form_code_value_easy(1,"",buff));
+						//vn_append_code($$,1,"",buff,0,0);
 						printf("gen:	%s\n",buff);
-						sprintf(buff,"%s := %s + %s",$$->addr,$$->addr,offset);
-						vn_append_code($$,1,"",buff,0,0);
+						sprintf(buff,"& %s = %s + %s",$$->addr,$$->addr,offset);
+						code_append(cv_code,form_code_value_easy(1,"",buff));
+						//vn_append_code($$,1,"",buff,0,0);
 						printf("gen:	%s\n",buff);
 						//gen(buff);
 					}
-					show_Vn($$);
+					code_parellel_append($$->code,cv_code);
+					gen_Vn($$);
 					}
 			|	ID	LPARENTHESE	expr	RPARENTHESE	{
 					printf("LVALUE->ID(expr)\n");
@@ -289,16 +323,79 @@
 					}
 			|	LVALUE	ASSIGNMENT	LVALUE			{
 					printf("LVALUE->LVALUE=LVALUE\n");
-					printf("	$1E:\n");
-					show_Vn($1);
-					printf("	$3E:\n");
-					show_Vn($3);
+					//printf("	$1E:\n");
+					//show_Vn($1);
+					//printf("	$3E:\n");
+					//show_Vn($3);
 					}		
 			|	LVALUE	ASSIGNMENT	E				{
 					printf("LVALUE->LVALUE=E\n	$1LVALUE:\n");
-					show_Vn($1);
-					printf("	$3E:\n");
-					show_Vn($3);
+					//prelassign-lassign-control-prerassign-rassign
+					codevalue* E_code=search_code_value_by_key($3->code,"code");
+					codevalue* Lvalue_code=search_code_value_by_key($1->code,"code");
+					
+					codevalue* lassign=form_code_value_easy(0,"lassign","");
+					codevalue* prelassign=form_code_value_easy(0,"prelassign","");
+					codevalue* control=form_code_value_easy(0,"control","");
+					codevalue* rassign=form_code_value_easy(0,"rassign","");
+					codevalue* prerassign=form_code_value_easy(0,"prerassign","");
+					
+					codevalue* cv_tmp1=form_cv_kck("lassignstart"," = & ","lassign");
+					code_append(cv_tmp1,form_cv_ck("goto","lassign"));
+					code_append(prelassign,cv_tmp1);
+					//prelassign;
+					
+					code_append(lassign,Lvalue_code->nextval);
+					//lassign
+					
+					codevalue* cv_tmp2=form_cv_kck("tempsize"," = ","lsize");
+					codevalue* cv_tmp2_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_2_1,cv_tmp_2);
+					
+					codevalue* cv_tmp3=form_cv_kc("startlabel",":");
+					codevalue* cv_tmp3_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_3_1,cv_tmp_3);
+					
+					codevalue* cv_tmp4=form_cv_ckck("if","tempsize",">0 goto ","assignstart");
+					codevalue* cv_tmp4_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_4_1,cv_tmp_4);
+					
+					codevalue* cv_tmp5=form_cv_ck("goto ","end");
+					codevalue* cv_tmp5_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_5_1,cv_tmp_5);
+					
+					code_append(cv_tmp_4_1,cv_tmp_5_1);
+					code_append(cv_tmp_3_1,cv_tmp_4_1);
+					code_append(cv_tmp_2_1,cv_tmp_3_1);
+					
+					code_append(control,cv_tmp_2_1);
+					//control
+					
+					codevalue* cv_tmp_6=form_cv_kc("assignstart","");
+					codevalue* cv_tmp_6_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_6_1,cv_tmp_6);
+					codevalue* cv_tmp_7=form_cv_kckc("tempsize"," = ","tempsize"," -1");
+					codevalue* cv_tmp_7_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_7_1,cv_tmp_7);
+					codevalue* cv_tmp_8=form_cv_ckck("& ","addr"," = ","lassign");
+					codevalue* cv_tmp_8_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_8_1,cv_tmp_8);
+					codevalue* cv_tmp_9=form_cv_ckckc("& ","lassign"," = ","lassign"," + 1");
+					codevalue* cv_tmp_9_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_9_1,cv_tmp_9);
+					codevalue* cv_tmp_10=form_cv_ck("goto ","rassign");
+					codevalue* cv_tmp_10_1=form_code_value_easy(0,"","");
+					code_parellel_append(cv_tmp_10_1,cv_tmp_10);
+					
+					code_append(cv_tmp_9_1,cv_tmp_10_1);
+					code_append(cv_tmp_8_1,cv_tmp_9_1);
+					code_append(cv_tmp_7_1,cv_tmp_8_1);
+					code_append(cv_tmp_6_1,cv_tmp_7_1);
+					code_append(prerassign,cv_tmp_6_1);
+					//prerassign
+					
+					code_append(rassign,E_code->nextval);
+					//rassign
 					
 					//newtemp=$3.addr.name; (E)
 					//code $1.addr.name=newtemp
@@ -306,9 +403,30 @@
 					}	
 			|	LVALUE	COMMA	LVALUE				{
 					printf("LVALUE->LVALUE,LVALUE\n");
-					$$=$1;
-					code_append($1->code,$3->code);
-					show_Vn($$);
+					//$$=$1;
+					//code_append($1->code,$3->code);
+					//show_Vn($$);
+					char *buff=(char*)malloc(sizeof(char)*32);
+					codevalue* cv_size1=search_code_value_by_key($1->code,"size");
+					codevalue* cv_size2=search_code_value_by_key($3->code,"size");
+					codevalue* cv_code1=search_code_value_by_key($1->code,"code");
+					codevalue* cv_code2=search_code_value_by_key($3->code,"code");
+					int newsize=cv_size1->def+cv_size2->def;
+					sprintf(buff,"%d",newsize);
+			
+					$$=formVn(formIdAddr("",-1,0,0,0),1,"","",0,0);			
+					code_parellel_append($$->code,form_code_value_easy(newsize,"size",buff));
+					
+					code_append(cv_code2,(cv_code1)->nextval);
+					if(cv_code2)code_parellel_append($$->code,cv_code2);
+					
+					code_append_debar_parellel($$->code,$3->code,"err");
+					code_append_debar_parellel($$->code,$1->code,"err");
+					printf("$$LVALUE:\n");
+					
+					gen_Vn($$);
+					
+					
 					//may from normal, or array
 					//if(!$1.addr)
 					//$1.addr.name=$3.addr.name;
@@ -398,7 +516,7 @@
 		|	E	MULTI	E	{printf("E->E*E\n");}
 		|	E	RDIV	E	{printf("E->E/E\n");}
 		|	MINUS	E %prec UMINUS	{printf("E->-E\n");}
-		|	LPARENTHESE	E	RPARENTHESE	{printf("E->(E)\n");}
+		|	LPARENTHESE	E	RPARENTHESE	{printf("E->(E)\n");$$=$2;}
 		|	F	{
 					printf("E->F\n");
 					$$=$1;
@@ -406,20 +524,30 @@
 					codevalue* cv_tmp1=form_code_value_easy(0,"code","");
 					codevalue* cv_tmp2=form_code_value_easy(0,"addr","");
 					codevalue* cv_tmp3=form_code_value_easy(0,"","");
+					codevalue* cv_tmp4=form_code_value_easy(0,"","");
+					codevalue* cv_tmp5=form_code_value_easy(0,""," & ");
+					codevalue* cv_tmp6=form_code_value_easy(0,"addr","");
+					codevalue* cv_tmp7=form_code_value_easy(0,"","= & ");
+					codevalue* cv_tmp8=form_code_value_easy(0,"addr","");
+					codevalue* cv_tmp9=form_code_value_easy(1,""," + 1");
 					char* buff=(char*)malloc(sizeof(char)*100);
 					sprintf(buff," = %s" ,($1->code)->val);
+					code_append(cv_tmp3,cv_tmp4);
+					code_append(cv_tmp5,cv_tmp7);
+					code_parellel_append(cv_tmp5,cv_tmp6);
+					code_parellel_append(cv_tmp4,cv_tmp5);
+					code_append(cv_tmp7,cv_tmp9);
+					code_parellel_append(cv_tmp7,cv_tmp8);
 					code_append(cv_tmp2,form_code_value_easy(1,"",buff));
 					code_append(cv_tmp1,cv_tmp3);
 					code_parellel_append(cv_tmp3,cv_tmp2);
 					code_parellel_append($$->code,cv_tmp1);
-					show_Vn($$);
+					//show_Vn($$);
+					gen_Vn($$);
 				}
 		|	E	COMMA	E	{
 					printf("E->E,E\n");
-					printf("$1E:\n");
-					show_Vn($1);
-					printf("$3E:\n");
-					show_Vn($3);
+					
 					char *buff=(char*)malloc(sizeof(char)*32);
 					codevalue* cv_size1=search_code_value_by_key($1->code,"size");
 					codevalue* cv_size2=search_code_value_by_key($3->code,"size");
@@ -436,13 +564,15 @@
 					
 					code_append_debar_parellel($$->code,$3->code,"err");
 					code_append_debar_parellel($$->code,$1->code,"err");
-					////$$=formVn(formIdAddr("",-1,0,0,0),($1->code)->def,($1->code)->key,($1->code)->val,$3->code,0);
 					printf("$$E:\n");
-					show_Vn($$);
+					
+					gen_Vn($$);
 				}
 		|	LBRACE	E	RBRACE	{
 					printf("E->{E}\n");
-					$$=formVn(formIdAddr("",-1,0,0,0),1,"","",0,$2->code);
+					//used form rarray
+					$$=$2;
+					//$$=formVn(formIdAddr("",-1,0,0,0),1,"","",0,$2->code);
 					printf("$$E:\n");
 					show_Vn($$);
 				}
