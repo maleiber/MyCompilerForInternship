@@ -609,19 +609,20 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "lexical.l"
-#line 2 "lexical.l"
+#line 1 "./lexical.l"
+#line 2 "./lexical.l"
 	#include "stdio.h"
 	#include "stdlib.h"
 	#include "syntax.h"
 	#define YYLMAX 65536
 	#include "bisonsyntax.tab.h"
+	#include "blocklist.h"
 	extern char lex_buff[BUFF_SIZE];
 	extern int lex_buff_size;
 	int line_no=1;
 	
-#line 623 "lex.yy.c"
 #line 624 "lex.yy.c"
+#line 625 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -630,7 +631,7 @@ char *yytext;
  * down here because we want the user's section 1 to have been scanned first.
  * The user has a chance to override it with an option.
  */
-#include "unistd.h"
+#include <unistd.h>
 #endif
     
 #ifndef YY_EXTRA_TYPE
@@ -838,9 +839,9 @@ YY_DECL
 		}
 
 	{
-#line 24 "lexical.l"
+#line 25 "./lexical.l"
 
-#line 843 "lex.yy.c"
+#line 844 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -899,313 +900,313 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 25 "lexical.l"
+#line 26 "./lexical.l"
 {++yylloc.last_column;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 26 "lexical.l"
+#line 27 "./lexical.l"
 {++yylloc.last_column;return (ELSE);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 27 "lexical.l"
+#line 28 "./lexical.l"
 {++yylloc.last_column;return (CASE);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 28 "lexical.l"
+#line 29 "./lexical.l"
 {++yylloc.last_column;return (IF);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 29 "lexical.l"
+#line 30 "./lexical.l"
 {++yylloc.last_column;return (WHILE);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 30 "lexical.l"
+#line 31 "./lexical.l"
 {++yylloc.last_column;return (DO);}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 31 "lexical.l"
+#line 32 "./lexical.l"
 {++yylloc.last_column;return (FOR);}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 32 "lexical.l"
+#line 33 "./lexical.l"
 {++yylloc.last_column;return (SWITCH);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 33 "lexical.l"
+#line 34 "./lexical.l"
 {++yylloc.last_column;return (CONTINUE);}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 34 "lexical.l"
+#line 35 "./lexical.l"
 {++yylloc.last_column;return (BREAK);}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 35 "lexical.l"
+#line 36 "./lexical.l"
 {++yylloc.last_column;return (STRUCT);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 36 "lexical.l"
+#line 37 "./lexical.l"
 {++yylloc.last_column;return (TRUE);}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 37 "lexical.l"
+#line 38 "./lexical.l"
 {++yylloc.last_column;return (FALSE);}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 38 "lexical.l"
+#line 39 "./lexical.l"
 {++yylloc.last_column;return	(INT);}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 39 "lexical.l"
+#line 40 "./lexical.l"
 {++yylloc.last_column;return (FLOAT);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 40 "lexical.l"
+#line 41 "./lexical.l"
 {++yylloc.last_column;return	(CHAR);}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 41 "lexical.l"
+#line 42 "./lexical.l"
 {++yylloc.last_column;return (STRING);}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 42 "lexical.l"
+#line 43 "./lexical.l"
 {++yylloc.last_column;return (DEF);}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 43 "lexical.l"
+#line 44 "./lexical.l"
 {++yylloc.last_column;return	(DEFINE);}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 44 "lexical.l"
+#line 45 "./lexical.l"
 {++yylloc.last_column;return	(VOID);}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 45 "lexical.l"
+#line 46 "./lexical.l"
 {++yylloc.last_column;return	(RETURN);}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 46 "lexical.l"
+#line 47 "./lexical.l"
 {install_decnum();++yylloc.last_column;return (DEC);}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 47 "lexical.l"
+#line 48 "./lexical.l"
 {install_id();++yylloc.last_column;return (ID);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 48 "lexical.l"
+#line 49 "./lexical.l"
 {install_id();++yylloc.last_column;return (ID);}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 49 "lexical.l"
+#line 50 "./lexical.l"
 {install_decnum();++yylloc.last_column;return (DEC);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 51 "lexical.l"
+#line 52 "./lexical.l"
 {install_hexnum();++yylloc.last_column;return (HEX);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 53 "lexical.l"
+#line 54 "./lexical.l"
 {install_octnum();++yylloc.last_column;return (OCT);}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 55 "lexical.l"
+#line 56 "./lexical.l"
 {install_decfloat();++yylloc.last_column;return (DEFLOAT);}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 57 "lexical.l"
+#line 58 "./lexical.l"
 {install_hexfloat();++yylloc.last_column;return (HEFLOAT);}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 59 "lexical.l"
+#line 60 "./lexical.l"
 {install_octfloat();++yylloc.last_column;return (OCFLOAT);}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 60 "lexical.l"
+#line 61 "./lexical.l"
 {install_constchar();++yylloc.last_column;return (CONSTCHAR);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 61 "lexical.l"
+#line 62 "./lexical.l"
 {install_conststring();++yylloc.last_column;return (CONSTSTRING);}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 62 "lexical.l"
+#line 63 "./lexical.l"
 {++yylloc.last_column;return (SEMIC);}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 63 "lexical.l"
+#line 64 "./lexical.l"
 {++yylloc.last_column;return (PLUS);}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 64 "lexical.l"
+#line 65 "./lexical.l"
 {++yylloc.last_column;return (MINUS);}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 65 "lexical.l"
+#line 66 "./lexical.l"
 {++yylloc.last_column;return (MULTI);}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 66 "lexical.l"
+#line 67 "./lexical.l"
 {++yylloc.last_column;return (RDIV);}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 67 "lexical.l"
+#line 68 "./lexical.l"
 {++yylloc.last_column;return (COMMA);}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 68 "lexical.l"
+#line 69 "./lexical.l"
 {++yylloc.last_column;return (DOT);}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 69 "lexical.l"
+#line 70 "./lexical.l"
 {++yylloc.last_column;return (COLON);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 70 "lexical.l"
+#line 71 "./lexical.l"
 {++yylloc.last_column;return (ASSIGNMENT);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 71 "lexical.l"
+#line 72 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"EQ");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (EQ);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 72 "lexical.l"
+#line 73 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"LT");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (LT);}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 73 "lexical.l"
+#line 74 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"GT");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (GT);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 74 "lexical.l"
+#line 75 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"LE");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (LE);}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 75 "lexical.l"
+#line 76 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"GE");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (GE);}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 76 "lexical.l"
+#line 77 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"NE");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (NE);}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 77 "lexical.l"
+#line 78 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"OR");yylval.stringtype=strdup(lex_buff);lex_buff_size=2;return (OR);}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 78 "lexical.l"
+#line 79 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"AND");yylval.stringtype=strdup(lex_buff);lex_buff_size=3;return (AND);}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 79 "lexical.l"
+#line 80 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"NOT");yylval.stringtype=strdup(lex_buff);lex_buff_size=3;return (NOT);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 80 "lexical.l"
+#line 81 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LPARENTHESE);}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 81 "lexical.l"
+#line 82 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RPARENTHESE);}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 82 "lexical.l"
+#line 83 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LBRACKET);}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 83 "lexical.l"
+#line 84 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RBRACKET);}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 84 "lexical.l"
-{++yylloc.last_column;strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LBRACE);}
+#line 85 "./lexical.l"
+{_add_new_block();++yylloc.last_column;strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LBRACE);}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 85 "lexical.l"
+#line 86 "./lexical.l"
 {++yylloc.last_column;strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RBRACE);}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 86 "lexical.l"
+#line 87 "./lexical.l"
 {++yylloc.last_column;return	(ADDR);}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 87 "lexical.l"
+#line 88 "./lexical.l"
 {++yylloc.last_column;return (DOUBLEQUOMARKS);}
 	YY_BREAK
 case 59:
 /* rule 59 can match eol */
 YY_RULE_SETUP
-#line 88 "lexical.l"
+#line 89 "./lexical.l"
 {++yylloc.last_line;yylloc.first_line = yylloc.last_line;
 
 yylloc.first_column = yylloc.last_column=0;line_no++;}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 92 "lexical.l"
+#line 93 "./lexical.l"
 {printf("err: '%c'(0%o):illegeal character at:%d.\n",yytext[0],yytext[0],line_no);}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 93 "lexical.l"
+#line 94 "./lexical.l"
 ECHO;
 	YY_BREAK
-#line 1208 "lex.yy.c"
+#line 1209 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2206,7 +2207,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 93 "lexical.l"
+#line 94 "./lexical.l"
 
 void install_id()
 {

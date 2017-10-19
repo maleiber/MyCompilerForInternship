@@ -4,6 +4,7 @@
 	#include "syntax.h"
 	#define YYLMAX 65536
 	#include "bisonsyntax.tab.h"
+	#include "blocklist.h"
 	extern char lex_buff[BUFF_SIZE];
 	extern int lex_buff_size;
 	int line_no=1;
@@ -81,7 +82,7 @@ return		{++yylloc.last_column;return	(RETURN);}
 ")"		{++yylloc.last_column;strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RPARENTHESE);}
 "["		{++yylloc.last_column;strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LBRACKET);}
 "]"		{++yylloc.last_column;strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RBRACKET);}
-"{"		{++yylloc.last_column;strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LBRACE);}
+"{"		{_add_new_block();++yylloc.last_column;strcpy(lex_buff,"L");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (LBRACE);}
 "}"		{++yylloc.last_column;strcpy(lex_buff,"R");yylval.stringtype=strdup(lex_buff);lex_buff_size=1;return (RBRACE);}
 "&"		{++yylloc.last_column;return	(ADDR);}
 \"		{++yylloc.last_column;return (DOUBLEQUOMARKS);}
