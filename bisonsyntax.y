@@ -238,12 +238,49 @@
 			|	TYPE	ID	LPARENTHESE	DECLARE	RPARENTHESE	LBRACE P RBRACE	{
 						printf("DECLARE->TYPE id(LVALUE){P}\n");
 						//define function
-						find_ans=_blockfindandadd(_get_block_pos(),lvalue_id_index->val,c1,formIdAddr(lvalue_id_index->val,c1,0,0,0),0,space,lvalue_id_addr,"");
-						//move_id_from_block(codevalue* lvalue_lid,int from,int to)
+						$$=formVn(formIdAddr("",-1,0,0,0),1,"","",0,0);
+						codevalue* cv_lid=search_code_value_by_key($4->code,"lid");
+						codevalue* dec_code=search_code_value_by_key($4->code,"code");
+						codevalue* P_code=search_code_value_by_key($7->code,"code");
+						codevalue* this_code=form_code_value_easy(0,"code","");
+						codevalue* lassignstart=search_code_value_by_key($4->code,"lassignstart");
+						int from=_getexternpos();
+						int to=_get_block_pos();
+						//move_id_from_block(codevalue* cv_lid,int from,int to)
+						char *funcpreparelabel,*funcstart,*exitlabel;
+						int find_ans=0;
+						char* buff=(char*)malloc(sizeof(char)*100);
+						funcpreparelabel=newlabel()->name;
+						funcstart=newlabel()->name;
+						exitlabel=newlabel()->name;
+						//function have no offset, noaddrname
+						find_ans=_blockfindandadd(
+							_get_block_pos(),$2,10,
+							formIdAddr($2,10,0,0,0),0,"",lassignstart->val,exitlabel,funcpreparelabel,funcstart);
+						if(find_ans>=0){printf("block notfound!\n");}
+						else{
+							codevalue* cv_line1;	//funcpreparelabel :
+							codevalue* cv_line2;	//declare.code
+							codevalue* cv_line3;	//goto exitlabel
+							codevalue* cv_line4;	//funcstart :
+							codevalue* cv_line5;	//P.code
+							codevalue* cv_line6;	//goto exitlabel
+							
+							//....
+							
+							
+							code_append(cv_line5,cv_line6);
+							code_append(cv_line4,cv_line5);
+							code_append(cv_line3,cv_line4);
+							code_append(cv_line2,cv_line3);
+							code_append(cv_line1,cv_line2);
+							code_append(this_code,cv_line1);
+						}
+							
+						code_parellel_append($$->code,lassignstart);
+						code_parellel_append($$->code,this_code);
 						
-						
-						
-						
+						gen_Vn($$);
 						
 						
 						
@@ -909,7 +946,54 @@
 		|	ID	LPARENTHESE E	RPARENTHESE	{
 				printf("F->ID(E)\n");
 				//use function
+				char* answer_val=newtemp()->name;
+				$$=formVn(0,1,"",answer_val,0,0);
+				int all_expect[1]={10};
+				codevalue *E_code=search_code_value_by_key($3->code,"code");
+				codevalue *this_code=form_code_value_easy(1,"code","");
+				char *buff,*tmpname;
+				char *funcpreparelabel,*funcstart,*exitlabel,*lassignstart;
+				vnstruct* find_ans=useage_of_id($1,all_expect,1,
+								@1.first_line, @1.first_column,
+								@1.last_line, @1.last_column);
+				hashtable* funcptr;
+				if(!find_ans->addr){printf("addr of id is empty!\n");return;}
+				else{
+					funcptr=find_hashptr_by_key(_get_block_pos(),$1,all_expect,1);
+					if(!funcptr){printf("funcptr of id is empty!\n");return;}
+					buff=(char*)malloc(sizeof(char)*100);
+					sprintf(buff,"%s",funcptr->enter1);
+					funcpreparelabel=buff;
+					buff=(char*)malloc(sizeof(char)*100);
+					sprintf(buff,"%s",funcptr->enter2);
+					funcstart=buff;
+					buff=(char*)malloc(sizeof(char)*100);
+					sprintf(buff,"%s",funcptr->exit1);
+					exitlabel=buff;
+					buff=(char*)malloc(sizeof(char)*100);
+					sprintf(buff,"%s",funcptr->tmpaddr);
+					lassignstart=buff;
+					tmpname=newtemp()->name;
+				}
 				
+				codevalue* cv_line1;	//exitlabel = nextline + 1
+				codevalue* cv_line2;	//goto funcpreparelabel
+				codevalue* cv_line3;	//tmpname=lassignstart
+				codevalue* cv_line4;	//E.code
+				redef_value_when_same_key_from_fathercode(E_code,"addr",tmpname);
+				codevalue* cv_line5;	//exitlabel = nextline + 1
+				codevalue* cv_line6;	//goto funcstart
+				
+				//....
+				
+				
+				code_append(cv_line5,cv_line6);
+				code_append(cv_line4,cv_line5);
+				code_append(cv_line3,cv_line4);
+				code_append(cv_line2,cv_line3);
+				code_append(cv_line1,cv_line2);
+				code_append(this_code,cv_line1);
+				code_parellel_append($$->code,this_code);
 			}
 		|	INTNUM	{
 				printf("F->INTNUM:%d\n",$1);
