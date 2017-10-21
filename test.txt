@@ -1,4 +1,4 @@
+int b2=1;
 {
-	int[2] isarray={1,2};
-	isarray[0]=-1;
+	int a2;
 }
